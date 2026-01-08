@@ -1,6 +1,6 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { PROMPTS } from "../constants";
-import { Question, AnswerGuide, Job } from "../types";
+import { Question, AnswerGuide, Job, CheatSheet } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
@@ -44,11 +44,11 @@ export const generateAnswerGuide = async (questionText: string): Promise<AnswerG
 
     try {
         const response: GenerateContentResponse = await ai.models.generateContent({
-            model: 'gemini-2.5-flash', // Using flash for speed, could use pro for quality
+            model: 'gemini-2.5-flash', 
             contents: prompt,
             config: {
                 responseMimeType: 'application/json',
-                temperature: 0.4 // Lower temp for factual answers
+                temperature: 0.4 
             }
         });
 
@@ -76,6 +76,27 @@ export const parseJobDescription = async (rawText: string): Promise<Job | null> 
         return JSON.parse(getCleanJson(text));
     } catch (error) {
         console.error("Error parsing job:", error);
+        return null;
+    }
+};
+
+export const generateCheatSheet = async (topic: string): Promise<CheatSheet | null> => {
+    const prompt = PROMPTS.CHEAT_SHEET_GENERATOR.replace('{topic}', topic);
+
+    try {
+        const response: GenerateContentResponse = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+            config: {
+                responseMimeType: 'application/json',
+                temperature: 0.3 // Low temp for accurate commands
+            }
+        });
+
+        const text = response.text || "{}";
+        return JSON.parse(getCleanJson(text));
+    } catch (error) {
+        console.error("Error generating cheat sheet:", error);
         return null;
     }
 };

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Terminal, BookOpen, Briefcase, MessageSquare, Menu, X, Cpu, FileText } from 'lucide-react';
+import { Terminal, BookOpen, Briefcase, MessageSquare, Menu, X, Cpu, FileText, FileCode } from 'lucide-react';
 import { Home } from './pages/Home';
 import { QuestionBank } from './pages/QuestionBank';
 import { JobParser } from './pages/JobParser';
 import { MockInterview } from './pages/MockInterview';
 import { Readme } from './pages/Readme';
+import { CheatSheets } from './pages/CheatSheets';
 
 // Since we cannot use React Router's URL syncing in this environment easily, 
 // we will use a simple state-based router for the MVP.
-type View = 'home' | 'questions' | 'jobs' | 'mock' | 'readme';
+type View = 'home' | 'questions' | 'jobs' | 'mock' | 'cheatsheets' | 'readme';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -20,6 +21,7 @@ export default function App() {
       case 'questions': return <QuestionBank />;
       case 'jobs': return <JobParser />;
       case 'mock': return <MockInterview />;
+      case 'cheatsheets': return <CheatSheets />;
       case 'readme': return <Readme />;
       default: return <Home onNavigate={setCurrentView} />;
     }
@@ -79,6 +81,7 @@ export default function App() {
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           <NavItem view="home" icon={Terminal} label="Dashboard" />
           <NavItem view="questions" icon={BookOpen} label="Question Bank" />
+          <NavItem view="cheatsheets" icon={FileCode} label="Cheat Sheets" />
           <NavItem view="jobs" icon={Briefcase} label="Job Parser" />
           <NavItem view="mock" icon={MessageSquare} label="Mock Interview" />
           <div className="pt-4 mt-4 border-t border-slate-800">

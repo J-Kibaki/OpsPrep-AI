@@ -35,6 +35,18 @@ export interface Job {
   extraction_confidence_score: number;
 }
 
+export interface CheatSheet {
+  topic: string;
+  introduction: string;
+  sections: {
+    title: string;
+    items: {
+      command: string;
+      description: string;
+    }[];
+  }[];
+}
+
 export interface Taxonomy {
   categories: Record<string, string[]>;
 }
