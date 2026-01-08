@@ -39,22 +39,23 @@ Output JSON Structure (Array):
   }
 ]`,
 
-  ANSWER_GUIDE: `You are a Principal SRE mentoring a candidate. Provide a structured answer guide for the following interview question.
+  ANSWER_GUIDE: `You are a Principal SRE mentoring a candidate. Provide a deep, structured answer guide for the following interview question.
 
 Question: "{question_text}"
 
 Instructions:
-1. Provide an "Ideal Answer Outline" in bullet points.
-2. Include concrete code snippets or CLI commands (e.g., kubectl, terraform) where applicable.
-3. List 2-3 common "Red Flags" or mistakes candidates make.
-4. Suggest 1 "Pro-tip" that demonstrates senior-level depth.
+1. IDENTIFY 3-5 "Key Concepts" (e.g., "Idempotency", "Control Loop", "Event Consistency") required to answer.
+2. Provide a "Step-by-Step Ideal Answer" focusing on the architectural 'Why' and the operational 'How'.
+3. Include realistic code snippets (kubectl, terraform, promql) with brief captions.
+4. List common "Red Flags" (shallow answers) and a "Pro-Tip" (senior insight).
 5. Return strictly valid JSON.
 
 Output JSON Structure:
 {
+  "key_concepts": ["concept1", "concept2"],
   "ideal_outline": ["step 1", "step 2", "step 3"],
   "technical_snippets": [
-    { "language": "bash|yaml|hcl", "code": "..." }
+    { "language": "bash|yaml|hcl|python", "code": "...", "caption": "Brief description" }
   ],
   "common_mistakes": ["mistake 1", "mistake 2"],
   "pro_tip": "string",
@@ -67,6 +68,7 @@ Taxonomy Rules:
 - Map extracted skills strictly to standard canonical names (e.g., "K8s" -> "Kubernetes", "GCP" -> "Google Cloud Platform").
 - If a salary range is found, extract min, max, and currency. If only one number, set min=max.
 - Determine if the role is Remote, Hybrid, or Onsite.
+- Extract lists of specific responsibilities and technical requirements.
 
 Raw Text:
 "{raw_job_text}"
@@ -84,6 +86,9 @@ Output JSON Structure:
     "currency": "string"
   },
   "required_skills": ["string"],
+  "responsibilities": ["string"],
+  "requirements": ["string"],
+  "benefits": ["string"],
   "extraction_confidence_score": 0.0 to 1.0
 }`
 };

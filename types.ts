@@ -9,8 +9,9 @@ export interface Question {
 }
 
 export interface AnswerGuide {
+  key_concepts: string[];
   ideal_outline: string[];
-  technical_snippets?: { language: string; code: string }[];
+  technical_snippets?: { language: string; code: string; caption?: string }[];
   common_mistakes: string[];
   pro_tip: string;
   follow_up_questions: string[];
@@ -28,6 +29,9 @@ export interface Job {
     currency: string;
   };
   required_skills: string[];
+  responsibilities: string[];
+  requirements: string[];
+  benefits?: string[];
   extraction_confidence_score: number;
 }
 

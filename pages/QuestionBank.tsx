@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { generateQuestions, generateAnswerGuide } from '../services/gemini';
 import { SKILL_TAXONOMY } from '../constants';
 import { Question, AnswerGuide } from '../types';
-import { Loader2, ChevronDown, ChevronUp, BookOpen, Clock, AlertTriangle, CheckCircle } from 'lucide-react';
+import { 
+  Loader2, ChevronDown, ChevronUp, BookOpen, Clock, 
+  AlertTriangle, CheckCircle, Copy, Check, Lightbulb, 
+  Hash, ListChecks, ArrowRightCircle 
+} from 'lucide-react';
 
 interface QuestionCardProps {
   question: Question;
@@ -142,6 +146,7 @@ export const QuestionBank = () => {
 const QuestionCard: React.FC<QuestionCardProps> = ({ question, expanded, onToggle }) => {
   const [guide, setGuide] = useState<AnswerGuide | null>(null);
   const [loadingGuide, setLoadingGuide] = useState(false);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const fetchGuide = async () => {
     if (guide || loadingGuide) return;
@@ -149,6 +154,12 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, expanded, onToggl
     const data = await generateAnswerGuide(question.question_text);
     setGuide(data);
     setLoadingGuide(false);
+  };
+
+  const handleCopy = (code: string, index: number) => {
+    navigator.clipboard.writeText(code);
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 2000);
   };
 
   React.useEffect(() => {
@@ -198,51 +209,123 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, expanded, onToggl
               <Loader2 className="animate-spin mr-3" /> Generating ideal answer outline...
             </div>
           ) : guide ? (
-            <div className="space-y-6 text-sm">
-              <div className="space-y-2">
-                <h4 className="font-semibold text-indigo-400 flex items-center">
-                  <CheckCircle size={16} className="mr-2" /> Ideal Answer Outline
-                </h4>
-                <ul className="list-disc list-outside pl-5 space-y-1 text-slate-300">
-                  {guide.ideal_outline.map((step, i) => (
-                    <li key={i}>{step}</li>
-                  ))}
-                </ul>
-              </div>
-
-              {guide.technical_snippets && guide.technical_snippets.length > 0 && (
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-indigo-400">Example Command / Config</h4>
-                  {guide.technical_snippets.map((snip, i) => (
-                    <div key={i} className="bg-slate-950 rounded-lg border border-slate-800 overflow-hidden">
-                      <div className="bg-slate-900 px-3 py-1 text-xs text-slate-500 border-b border-slate-800 font-mono">
-                        {snip.language}
-                      </div>
-                      <pre className="p-3 overflow-x-auto text-slate-300 font-mono text-xs">
-                        <code>{snip.code}</code>
-                      </pre>
-                    </div>
+            <div className="space-y-8 text-sm">
+              
+              {/* Key Concepts - Pills */}
+              {guide.key_concepts && guide.key_concepts.length > 0 && (
+                <div className="flex flex-wrap gap-2 items-center">
+                  <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wider mr-2">Key Concepts:</span>
+                  {guide.key_concepts.map((concept, i) => (
+                    <span key={i} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                      <Hash size={10} className="mr-1 opacity-50" />{concept}
+                    </span>
                   ))}
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-red-950/10 border border-red-900/30 rounded-lg p-4">
-                  <h4 className="font-semibold text-red-400 mb-2 flex items-center">
-                    <AlertTriangle size={16} className="mr-2" /> Common Mistakes
-                  </h4>
-                  <ul className="list-disc list-inside space-y-1 text-slate-400">
-                    {guide.common_mistakes.map((m, i) => <li key={i}>{m}</li>)}
-                  </ul>
-                </div>
-                <div className="bg-emerald-950/10 border border-emerald-900/30 rounded-lg p-4">
-                  <h4 className="font-semibold text-emerald-400 mb-2">Pro Tip</h4>
-                  <p className="text-slate-400 italic">"{guide.pro_tip}"</p>
+              {/* Answer Outline - Timeline Style */}
+              <div className="space-y-4">
+                <h4 className="font-bold text-slate-200 flex items-center text-base">
+                  <ListChecks size={18} className="mr-2 text-indigo-400" /> Ideal Answer Flow
+                </h4>
+                <div className="pl-4 border-l-2 border-slate-800 space-y-6">
+                  {guide.ideal_outline.map((step, i) => (
+                    <div key={i} className="relative pl-6">
+                      <span className="absolute -left-[21px] top-0 h-3 w-3 rounded-full bg-slate-700 ring-4 ring-slate-900 border-2 border-indigo-500/50" />
+                      <p className="text-slate-300 leading-relaxed text-sm">{step}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
+
+              {/* Technical Snippets - Terminal Style */}
+              {guide.technical_snippets && guide.technical_snippets.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="font-bold text-slate-200 flex items-center text-base">
+                     <BookOpen size={18} className="mr-2 text-emerald-400" /> Technical Implementation
+                  </h4>
+                  <div className="grid grid-cols-1 gap-4">
+                    {guide.technical_snippets.map((snip, i) => (
+                      <div key={i} className="bg-slate-950 rounded-lg border border-slate-800 overflow-hidden group">
+                        <div className="bg-slate-900 px-3 py-2 flex items-center justify-between border-b border-slate-800">
+                           <div className="flex items-center space-x-2">
+                             <div className="flex space-x-1">
+                               <div className="w-2.5 h-2.5 rounded-full bg-red-500/20"></div>
+                               <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20"></div>
+                               <div className="w-2.5 h-2.5 rounded-full bg-green-500/20"></div>
+                             </div>
+                             <span className="text-xs text-slate-500 font-mono ml-2 uppercase">{snip.language}</span>
+                             {snip.caption && <span className="text-xs text-slate-500 border-l border-slate-700 pl-2 ml-2 truncate max-w-[200px]">{snip.caption}</span>}
+                           </div>
+                           <button 
+                             onClick={(e) => { e.stopPropagation(); handleCopy(snip.code, i); }}
+                             className="text-slate-500 hover:text-white transition-colors p-1"
+                           >
+                             {copiedIndex === i ? <Check size={14} className="text-emerald-500"/> : <Copy size={14} />}
+                           </button>
+                        </div>
+                        <pre className="p-4 overflow-x-auto text-slate-300 font-mono text-xs leading-relaxed bg-slate-950/50">
+                          <code>{snip.code}</code>
+                        </pre>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Red Flags */}
+                <div className="bg-red-950/10 border border-red-900/30 rounded-xl p-5">
+                  <h4 className="font-bold text-red-400 mb-3 flex items-center">
+                    <AlertTriangle size={18} className="mr-2" /> Red Flags
+                  </h4>
+                  <ul className="space-y-2">
+                    {guide.common_mistakes.map((m, i) => (
+                      <li key={i} className="text-slate-400 text-xs flex items-start">
+                        <span className="mr-2 text-red-500/50">•</span>
+                        {m}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                {/* Pro Tip */}
+                <div className="relative bg-gradient-to-br from-indigo-900/10 to-purple-900/10 border border-indigo-500/30 rounded-xl p-5 overflow-hidden">
+                  <div className="absolute top-0 right-0 p-2 opacity-10">
+                    <Lightbulb size={64} className="text-indigo-400" />
+                  </div>
+                  <h4 className="font-bold text-indigo-400 mb-2 flex items-center relative z-10">
+                    <Lightbulb size={18} className="mr-2" /> Principal Engineer Tip
+                  </h4>
+                  <p className="text-slate-300 italic relative z-10 leading-relaxed border-l-2 border-indigo-500/50 pl-3">
+                    "{guide.pro_tip}"
+                  </p>
+                </div>
+              </div>
+
+              {/* Follow Up */}
+              {guide.follow_up_questions && guide.follow_up_questions.length > 0 && (
+                <div className="pt-4 border-t border-slate-800">
+                  <h4 className="font-bold text-slate-200 mb-3 flex items-center text-sm">
+                    <ArrowRightCircle size={16} className="mr-2 text-slate-500" /> Digging Deeper (Follow-ups)
+                  </h4>
+                  <div className="flex flex-col space-y-2">
+                     {guide.follow_up_questions.map((q, i) => (
+                       <div key={i} className="text-slate-400 hover:text-indigo-400 transition-colors cursor-pointer text-xs flex items-center">
+                          <span className="w-1.5 h-1.5 rounded-full bg-slate-700 mr-2"></span>
+                          {q}
+                       </div>
+                     ))}
+                  </div>
+                </div>
+              )}
+
             </div>
           ) : (
-             <div className="text-red-400">Failed to load answer guide.</div>
+             <div className="flex flex-col items-center justify-center py-8 text-red-400 space-y-2">
+                <AlertTriangle size={24} />
+                <p>Failed to load answer guide. Please try again.</p>
+             </div>
           )}
         </div>
       )}
