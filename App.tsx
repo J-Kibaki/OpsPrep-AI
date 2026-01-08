@@ -1,39 +1,47 @@
 import React, { useState } from 'react';
-import { Terminal, BookOpen, Briefcase, MessageSquare, Menu, X, Cpu, FileText, FileCode } from 'lucide-react';
+import { Terminal, BookOpen, Briefcase, MessageSquare, Menu, X, Cpu, FileText, FileCode, Layers } from 'lucide-react';
 import { Home } from './pages/Home';
 import { QuestionBank } from './pages/QuestionBank';
 import { JobParser } from './pages/JobParser';
 import { MockInterview } from './pages/MockInterview';
 import { Readme } from './pages/Readme';
 import { CheatSheets } from './pages/CheatSheets';
+import { TaxonomyExplorer } from './pages/TaxonomyExplorer';
 
-// Since we cannot use React Router's URL syncing in this environment easily, 
-// we will use a simple state-based router for the MVP.
-type View = 'home' | 'questions' | 'jobs' | 'mock' | 'cheatsheets' | 'readme';
+type View = 'home' | 'questions' | 'jobs' | 'mock' | 'cheatsheets' | 'readme' | 'taxonomy';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<View>('home');
+  const [viewParams, setViewParams] = useState<any>({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const navigate = (view: View, params?: any) => {
+    setCurrentView(view);
+    if (params) {
+      setViewParams(params);
+    } else {
+      setViewParams({});
+    }
+    // On mobile, auto-close sidebar after selection
+    if (window.innerWidth < 1024) setIsSidebarOpen(false);
+  };
 
   const renderView = () => {
     switch (currentView) {
-      case 'home': return <Home onNavigate={setCurrentView} />;
-      case 'questions': return <QuestionBank />;
-      case 'jobs': return <JobParser />;
+      case 'home': return <Home onNavigate={navigate} />;
+      case 'questions': return <QuestionBank initialTopic={viewParams?.topic} />;
+      case 'jobs': return <JobParser onNavigate={navigate} />;
       case 'mock': return <MockInterview />;
       case 'cheatsheets': return <CheatSheets />;
+      case 'taxonomy': return <TaxonomyExplorer onNavigate={navigate} />;
       case 'readme': return <Readme />;
-      default: return <Home onNavigate={setCurrentView} />;
+      default: return <Home onNavigate={navigate} />;
     }
   };
 
   const NavItem = ({ view, icon: Icon, label }: { view: View; icon: React.ElementType; label: string }) => (
     <button
-      onClick={() => {
-        setCurrentView(view);
-        // On mobile, auto-close sidebar after selection
-        if (window.innerWidth < 1024) setIsSidebarOpen(false);
-      }}
+      onClick={() => navigate(view)}
       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
         currentView === view 
           ? 'bg-indigo-600/20 text-indigo-400 border-r-2 border-indigo-500' 
@@ -78,9 +86,10 @@ export default function App() {
           </span>
         </div>
 
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
           <NavItem view="home" icon={Terminal} label="Dashboard" />
           <NavItem view="questions" icon={BookOpen} label="Question Bank" />
+          <NavItem view="taxonomy" icon={Layers} label="Skill Taxonomy" />
           <NavItem view="cheatsheets" icon={FileCode} label="Cheat Sheets" />
           <NavItem view="jobs" icon={Briefcase} label="Job Parser" />
           <NavItem view="mock" icon={MessageSquare} label="Mock Interview" />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { generateQuestions, generateAnswerGuide } from '../services/gemini';
 import { SKILL_TAXONOMY } from '../constants';
 import { Question, AnswerGuide } from '../types';
@@ -14,7 +14,7 @@ interface QuestionCardProps {
   onToggle: () => void;
 }
 
-export const QuestionBank = () => {
+export const QuestionBank = ({ initialTopic }: { initialTopic?: string }) => {
   const [role, setRole] = useState('SRE');
   const [level, setLevel] = useState('Senior');
   const [cloud, setCloud] = useState('AWS');
@@ -22,6 +22,12 @@ export const QuestionBank = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initialTopic) {
+        setSelectedTopics([initialTopic]);
+    }
+  }, [initialTopic]);
 
   const handleGenerate = async () => {
     if (selectedTopics.length === 0) return;
@@ -124,6 +130,9 @@ export const QuestionBank = () => {
             <div className="text-center py-20 opacity-50">
               <BookOpen size={64} className="mx-auto mb-4 text-slate-600" />
               <p className="text-xl font-medium">Configure your session to generate interview scenarios.</p>
+              {initialTopic && (
+                 <p className="text-sm text-indigo-400 mt-2">Prepared to practice: {initialTopic}</p>
+              )}
             </div>
           ) : (
             <div className="space-y-6">
@@ -259,9 +268,20 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, expanded, onToggl
                            </div>
                            <button 
                              onClick={(e) => { e.stopPropagation(); handleCopy(snip.code, i); }}
-                             className="text-slate-500 hover:text-white transition-colors p-1"
+                             className="flex items-center space-x-1.5 text-xs text-slate-500 hover:text-slate-200 bg-transparent hover:bg-slate-800 px-2 py-1 rounded transition-all duration-200"
+                             title="Copy to clipboard"
                            >
-                             {copiedIndex === i ? <Check size={14} className="text-emerald-500"/> : <Copy size={14} />}
+                             {copiedIndex === i ? (
+                                <>
+                                    <Check size={14} className="text-emerald-500"/>
+                                    <span className="text-emerald-500 font-medium">Copied</span>
+                                </>
+                             ) : (
+                                <>
+                                    <Copy size={14} />
+                                    <span className="opacity-0 group-hover:opacity-100 transition-opacity">Copy</span>
+                                </>
+                             )}
                            </button>
                         </div>
                         <pre className="p-4 overflow-x-auto text-slate-300 font-mono text-xs leading-relaxed bg-slate-950/50">

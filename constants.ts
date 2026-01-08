@@ -3,6 +3,7 @@ import { Taxonomy } from "./types";
 export const SKILL_TAXONOMY: Taxonomy = {
   categories: {
     Cloud_Providers: ["AWS", "GCP", "Azure", "Oracle Cloud", "DigitalOcean"],
+    Operating_Systems: ["Linux", "Red Hat", "Ubuntu", "CentOS", "Windows Server"],
     Containerization: ["Kubernetes", "Docker", "Helm", "Istio", "Containerd", "OpenShift"],
     IaC_and_Config: ["Terraform", "Ansible", "CloudFormation", "Pulumi", "SaltStack"],
     CI_CD: ["Jenkins", "GitHub Actions", "GitLab CI", "CircleCI", "ArgoCD", "Tekton"],
