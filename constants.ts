@@ -142,5 +142,27 @@ Output JSON Structure:
   "strengths": ["string"],
   "weaknesses": ["string"],
   "improvement_tips": ["string"]
+}`,
+
+  RESUME_PARSER: `You are an expert Technical Recruiter.
+Task: Extract structured profile data from the following resume text.
+
+Instructions:
+1. Extract the candidate's name and current title (if available, otherwise estimate based on experience).
+2. Calculate total years of experience.
+3. Extract a list of technical skills (Tags).
+4. Estimate their seniority level (Junior, Mid, Senior, Principal).
+5. Return strictly valid JSON.
+
+Resume Text:
+"{resume_text}"
+
+Output JSON Structure:
+{
+  "name": "string",
+  "title": "string",
+  "level": "string",
+  "experience_years": number,
+  "skills": ["string"]
 }`
 };

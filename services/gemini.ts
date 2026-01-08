@@ -134,3 +134,24 @@ export const evaluateInterview = async (messages: { role: string; text: string }
         return null;
     }
 };
+
+export const parseResume = async (resumeText: string): Promise<any | null> => {
+    const prompt = PROMPTS.RESUME_PARSER.replace('{resume_text}', resumeText.substring(0, 10000)); // Limit length
+
+    try {
+        const response: GenerateContentResponse = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+            config: {
+                responseMimeType: 'application/json',
+                temperature: 0.2
+            }
+        });
+
+        const text = response.text || "{}";
+        return JSON.parse(getCleanJson(text));
+    } catch (error) {
+        console.error("Error parsing resume:", error);
+        return null;
+    }
+};

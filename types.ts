@@ -33,6 +33,9 @@ export interface Job {
   requirements: string[];
   benefits?: string[];
   extraction_confidence_score: number;
+  source?: string;
+  application_link?: string;
+  posted_date?: string;
 }
 
 export interface CheatSheet {
@@ -57,4 +60,27 @@ export interface InterviewFeedback {
   strengths: string[];
   weaknesses: string[];
   improvement_tips: string[];
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  title: string;
+  level: string; // e.g., "Lvl 4 • SRE II"
+  experience_years: number;
+  target_role: string;
+  skills: string[];
+  resume_text?: string;
+  resume_last_updated?: string;
+  streak_days: number;
+  last_active_date: string;
+}
+
+export interface LearningActivity {
+  id: string;
+  type: 'interview' | 'question' | 'cheatsheet';
+  topic: string;
+  score?: number; // 0-100
+  timestamp: string;
+  details?: string;
 }

@@ -3,6 +3,7 @@ import { createMockInterviewSession, evaluateInterview } from '../services/gemin
 import { Send, User, Bot, Loader2, StopCircle, Award, CheckCircle2, XCircle, Lightbulb, TrendingUp } from 'lucide-react';
 import { Chat, GenerateContentResponse } from "@google/genai";
 import { InterviewFeedback } from '../types';
+import { useUser } from '../context/UserContext';
 
 interface Message {
   role: 'user' | 'model';
@@ -19,6 +20,8 @@ export const MockInterview = () => {
   const [session, setSession] = useState<Chat | null>(null);
   const [feedback, setFeedback] = useState<InterviewFeedback | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const { addActivity } = useUser();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -66,7 +69,11 @@ export const MockInterview = () => {
     if (messages.length < 3) return; // Don't evaluate empty sessions
     setEvaluating(true);
     const result = await evaluateInterview(messages);
-    setFeedback(result);
+    if (result) {
+        setFeedback(result);
+        // Log to backend/context
+        addActivity('interview', 'Mock SRE Interview', result.score);
+    }
     setEvaluating(false);
   };
 
