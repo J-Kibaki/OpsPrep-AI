@@ -1,0 +1,5 @@
+{
+  "name": "OpsPrep AI",
+  "description": "AI-powered interview prep for DevOps & SRE roles. Features question generation, job parsing, and mock interviews.",
+  "requestFramePermissions": []
+}
