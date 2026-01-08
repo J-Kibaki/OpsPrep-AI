@@ -28,6 +28,14 @@
 - Engage in a real-time chat session with an AI "Principal Engineer".
 - The AI probes for deeper understanding ("Why did you choose that approach?").
 - Simulate pressure situations in a safe environment.
+- **Automated Feedback**: Receive a detailed scorecard with strengths, weaknesses, and actionable tips after every session.
+
+### 5. 👤 Profile & Progress Tracking (New!)
+- **Local-First Identity**: Create and edit your engineer profile.
+- **Resume Parsing**: Upload your resume (text) to automatically extract skills and seniority level using AI.
+- **Readiness Score**: Track your interview preparedness with a dynamic score based on your activity.
+- **Gamified Streaks**: Maintain daily learning streaks to build habit consistency.
+- **Privacy Focused**: All user data is stored locally in your browser.
 
 ## 🛠️ Tech Stack
 
@@ -35,8 +43,9 @@
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **Icons**: Lucide React
+- **Charts**: Recharts
 - **AI Model**: Google Gemini 2.5 Flash (via `@google/genai` SDK)
-- **Build Tooling**: Vite (Recommended for local dev)
+- **State Management**: React Context + LocalStorage (Persistence)
 
 ## 🚀 Getting Started
 
@@ -63,20 +72,65 @@
    # .env
    API_KEY=your_google_gemini_api_key_here
    ```
-   *Note: In the live demo environment, the key is injected via `process.env.API_KEY` automatically.*
 
 4. **Run the development server**
    ```bash
    npm run dev
    ```
 
+## 🚢 Deployment & Self-Hosting
+
+OpsPrep AI is a static single-page application (SPA). You can host it anywhere that serves static HTML/JS/CSS.
+
+### Option 1: Static Hosting (Vercel, Netlify, S3)
+
+1. Build the project:
+   ```bash
+   npm run build
+   ```
+2. Upload the `dist/` folder to your static hosting provider.
+3. **Configuration**: Ensure your `API_KEY` is available during the build process if using `.env` injection, or configure your environment to supply it safely.
+
+### Option 2: Docker (Self-Hosting)
+
+You can containerize the app using Nginx to serve the static files.
+
+1. **Create a `Dockerfile`** in the project root:
+   ```dockerfile
+   # Build Stage
+   FROM node:18-alpine as build
+   WORKDIR /app
+   COPY package*.json ./
+   RUN npm install
+   COPY . .
+   # Note: For static builds, env vars are often baked in at build time.
+   # Ensure API_KEY is set in your build environment.
+   ARG API_KEY
+   ENV API_KEY=$API_KEY
+   RUN npm run build
+
+   # Serve Stage
+   FROM nginx:alpine
+   COPY --from=build /app/dist /usr/share/nginx/html
+   EXPOSE 80
+   CMD ["nginx", "-g", "daemon off;"]
+   ```
+
+2. **Build and Run**:
+   ```bash
+   docker build --build-arg API_KEY=your_key_here -t opsprep-ai .
+   docker run -d -p 8080:80 opsprep-ai
+   ```
+   Access at `http://localhost:8080`.
+
 ## 📂 Project Structure
 
 ```
 /
 ├── components/       # Reusable UI components
-├── pages/            # Main application views (Home, QuestionBank, JobParser, etc.)
-├── services/         # API integration with Google Gemini
+├── context/          # Global state (User, Activity)
+├── pages/            # Main application views
+├── services/         # Gemini API & LocalStorage logic
 ├── constants.ts      # Prompt templates and taxonomies
 ├── types.ts          # TypeScript interfaces
 ├── App.tsx           # Main router and layout
