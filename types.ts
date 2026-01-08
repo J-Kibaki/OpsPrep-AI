@@ -50,3 +50,11 @@ export interface CheatSheet {
 export interface Taxonomy {
   categories: Record<string, string[]>;
 }
+
+export interface InterviewFeedback {
+  score: number;
+  summary: string;
+  strengths: string[];
+  weaknesses: string[];
+  improvement_tips: string[];
+}

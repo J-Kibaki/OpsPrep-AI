@@ -116,5 +116,31 @@ Output JSON Structure:
       ]
     }
   ]
+}`,
+
+  INTERVIEW_EVALUATOR: `You are a Hiring Manager for a Senior DevOps/SRE role.
+Task: Evaluate the following interview transcript between a Candidate and an AI Interviewer.
+
+Transcript:
+{transcript}
+
+Evaluation Criteria:
+1. Technical Correctness (Accuracy of Linux, Networking, K8s knowledge).
+2. Depth (Did they explain 'why' or just 'how'? Did they mention trade-offs?).
+3. Communication (Clarity, conciseness, confidence).
+4. Problem Solving (Structured approach to troubleshooting/design).
+
+Instructions:
+- Be strict. A generic answer should not get a high score.
+- Provide actionable feedback.
+- Output strictly valid JSON.
+
+Output JSON Structure:
+{
+  "score": number (0-100),
+  "summary": "string",
+  "strengths": ["string"],
+  "weaknesses": ["string"],
+  "improvement_tips": ["string"]
 }`
 };

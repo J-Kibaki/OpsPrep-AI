@@ -1,6 +1,6 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { PROMPTS } from "../constants";
-import { Question, AnswerGuide, Job, CheatSheet } from "../types";
+import { Question, AnswerGuide, Job, CheatSheet, InterviewFeedback } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
@@ -108,4 +108,29 @@ export const createMockInterviewSession = (systemInstruction: string) => {
             systemInstruction,
         }
     });
+};
+
+export const evaluateInterview = async (messages: { role: string; text: string }[]): Promise<InterviewFeedback | null> => {
+    const transcript = messages
+        .map(m => `${m.role === 'model' ? 'Interviewer' : 'Candidate'}: ${m.text}`)
+        .join('\n\n');
+
+    const prompt = PROMPTS.INTERVIEW_EVALUATOR.replace('{transcript}', transcript);
+
+    try {
+        const response: GenerateContentResponse = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+            config: {
+                responseMimeType: 'application/json',
+                temperature: 0.5 
+            }
+        });
+
+        const text = response.text || "{}";
+        return JSON.parse(getCleanJson(text));
+    } catch (error) {
+        console.error("Error evaluating interview:", error);
+        return null;
+    }
 };
