@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { parseJobDescription } from '../services/gemini';
 import { Job } from '../types';
-import { Loader2, ArrowRight, Building2, MapPin, DollarSign, Search, X, CheckCircle2, List, Target, ShieldCheck, Briefcase, Zap, AlertCircle, BarChart2 } from 'lucide-react';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
+import { Loader2, ArrowRight, Building2, MapPin, DollarSign, Search, X, CheckCircle2, List, Target, ShieldCheck, Briefcase, Zap, AlertCircle } from 'lucide-react';
+import { SkillMap } from '../components/SkillMap';
 
 const MOCK_JOBS: Job[] = [
   {
@@ -255,89 +255,6 @@ const JobCard: React.FC<{ job: Job; onClick: () => void }> = ({ job, onClick }) 
   </div>
 );
 
-const SkillGapAnalysis = ({ skills, onPractice }: { skills: string[], onPractice: (skill: string) => void }) => {
-    // Mock data generation: Assign a random "User Proficiency" score to each required skill
-    const data = useMemo(() => {
-        // Deterministic mock based on string char code for demo stability
-        return skills.slice(0, 6).map(skill => {
-            const mockScore = (skill.length * 7 + 23) % 100;
-            return {
-                subject: skill,
-                required: 100,
-                yours: mockScore
-            };
-        });
-    }, [skills]);
-
-    return (
-        <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
-             <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-slate-100 flex items-center">
-                    <BarChart2 className="mr-2 text-indigo-500" size={20} />
-                    Skill Match Analysis
-                </h3>
-                <div className="flex gap-4 text-xs font-medium">
-                    <div className="flex items-center"><span className="w-3 h-3 rounded-full bg-indigo-500/20 border border-indigo-500 mr-2"></span> Required</div>
-                    <div className="flex items-center"><span className="w-3 h-3 rounded-full bg-emerald-500/50 border border-emerald-500 mr-2"></span> Your Profile</div>
-                </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-                <div className="h-[250px] w-full bg-slate-900/50 rounded-lg border border-slate-800/50 relative">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
-                            <PolarGrid stroke="#334155" />
-                            <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                            <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                            <Radar name="Required" dataKey="required" stroke="#6366f1" fill="#6366f1" fillOpacity={0.1} />
-                            <Radar name="You" dataKey="yours" stroke="#10b981" fill="#10b981" fillOpacity={0.4} />
-                            <Tooltip 
-                                contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', color: '#f1f5f9' }}
-                                itemStyle={{ color: '#f1f5f9' }}
-                                labelStyle={{ color: '#f8fafc' }}
-                            />
-                        </RadarChart>
-                    </ResponsiveContainer>
-                </div>
-                
-                <div className="space-y-4 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
-                    <h4 className="font-bold text-xs uppercase text-slate-500 tracking-wider">Action Plan</h4>
-                    <div className="space-y-3">
-                        {data.map((item, idx) => (
-                            <div key={idx} className="flex items-center justify-between p-3 bg-slate-950 border border-slate-800 rounded-lg hover:border-slate-700 transition-colors">
-                                <div>
-                                    <div className="font-medium text-slate-200 text-sm">{item.subject}</div>
-                                    <div className="text-xs text-slate-500 flex items-center mt-0.5">
-                                        <div className="w-16 h-1.5 bg-slate-800 rounded-full mr-2 overflow-hidden">
-                                            <div 
-                                                className={`h-full rounded-full ${item.yours > 70 ? 'bg-emerald-500' : item.yours > 40 ? 'bg-amber-500' : 'bg-red-500'}`} 
-                                                style={{ width: `${item.yours}%` }}
-                                            />
-                                        </div>
-                                        <span>{item.yours}% Match</span>
-                                    </div>
-                                </div>
-                                {item.yours < 70 ? (
-                                    <button 
-                                        onClick={() => onPractice(item.subject)}
-                                        className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md transition-colors flex items-center shadow-lg shadow-indigo-900/20"
-                                    >
-                                        <Zap size={12} className="mr-1 fill-current" /> Practice
-                                    </button>
-                                ) : (
-                                    <div className="text-emerald-500 flex items-center text-xs font-medium px-3 py-1.5 bg-emerald-500/10 rounded-md border border-emerald-500/20">
-                                        <CheckCircle2 size={12} className="mr-1" /> Strong
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
 const JobDetailModal: React.FC<{ job: Job; onClose: () => void; onNavigate?: (view: any, params?: any) => void }> = ({ job, onClose, onNavigate }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-10 bg-black/60 backdrop-blur-md animate-fadeIn">
@@ -385,14 +302,13 @@ const JobDetailModal: React.FC<{ job: Job; onClose: () => void; onNavigate?: (vi
              <StatBox icon={Target} label="Match Score" value="85% (Mock)" valueColor="text-indigo-400" />
           </div>
 
-          {/* New Visual Skill Map */}
-          <SkillGapAnalysis 
+          {/* Reusable Skill Map Component */}
+          <SkillMap 
             skills={job.required_skills} 
-            onPractice={(skill) => {
-                if(onNavigate) {
-                    onClose();
-                    onNavigate('questions', { topic: skill });
-                }
+            onNavigate={(view, params) => {
+              // Close modal before navigating
+              onClose();
+              if (onNavigate) onNavigate(view, params);
             }} 
           />
 
