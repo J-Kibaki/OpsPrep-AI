@@ -4,6 +4,7 @@ import { Send, User, Bot, Loader2, StopCircle, Award, CheckCircle2, XCircle, Lig
 import { Chat, GenerateContentResponse } from "@google/genai";
 import { InterviewFeedback } from '../types';
 import { useUser } from '../context/UserContext';
+import { sanitizePromptInput } from '../utils/security';
 
 interface Message {
   role: 'user' | 'model';
@@ -46,7 +47,8 @@ const MockInterview = () => {
   const handleSend = async () => {
     if (!input.trim() || !session) return;
 
-    const userMsg = input;
+    // Sanitize user input to prevent prompt injection
+    const userMsg = sanitizePromptInput(input);
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
     setLoading(true);
