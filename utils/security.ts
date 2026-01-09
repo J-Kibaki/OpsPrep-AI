@@ -13,8 +13,8 @@ export const sanitizePromptInput = (input: string): string => {
   const maxLength = 10000;
   let sanitized = input.substring(0, maxLength);
   
-  // Remove control characters and null bytes
-  sanitized = sanitized.replace(/[\x00-\x1F\x7F]/g, '');
+  // Remove control characters except newlines and tabs
+  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
   
   // Escape special prompt engineering patterns
   // Remove multiple newlines that could be used to break out of context
