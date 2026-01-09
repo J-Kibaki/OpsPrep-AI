@@ -93,40 +93,40 @@ const MockInterview = () => {
   };
 
   return (
-    <div className="h-full flex flex-col max-w-4xl mx-auto">
+    <div className="h-full flex flex-col max-w-4xl mx-auto bg-slate-950">
       {/* Header */}
-      <div className="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center">
-        <div>
-           <h2 className="text-lg font-bold text-slate-100">Live Mock Interview</h2>
-           <p className="text-xs text-slate-400">Session ID: #MOCK-{Math.floor(Math.random() * 10000)}</p>
+      <div className="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-10">
+        <div className="flex flex-col">
+           <h2 className="text-base sm:text-lg font-bold text-slate-100 truncate max-w-[150px] sm:max-w-none">Live Mock Interview</h2>
+           <p className="text-[10px] sm:text-xs text-slate-400">Principal SRE Persona</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {!feedback && (
-              <div className="px-3 py-1 bg-red-500/10 border border-red-500/50 text-red-500 text-xs rounded-full animate-pulse">
+              <div className="px-2 py-0.5 sm:px-3 sm:py-1 bg-red-500/10 border border-red-500/50 text-red-500 text-[10px] sm:text-xs rounded-full animate-pulse font-bold">
                 LIVE
               </div>
           )}
           {feedback && (
              <button 
                 onClick={handleRestart}
-                className="text-xs px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 transition-colors"
+                className="text-[10px] sm:text-xs px-2 py-1 sm:px-3 sm:py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 transition-colors whitespace-nowrap"
              >
-                Start New Session
+                New Session
              </button>
           )}
         </div>
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 relative">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 relative custom-scrollbar">
         {messages.map((msg, idx) => (
-          <div key={idx} className={`flex items-start space-x-3 ${msg.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+          <div key={idx} className={`flex items-start space-x-2 sm:space-x-3 ${msg.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
+            <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0 shadow-md ${
               msg.role === 'model' ? 'bg-indigo-600' : 'bg-slate-600'
             }`}>
-              {msg.role === 'model' ? <Bot size={16} text-white /> : <User size={16} text-white />}
+              {msg.role === 'model' ? <Bot size={14} className="text-white" /> : <User size={14} className="text-white" />}
             </div>
-            <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+            <div className={`max-w-[85%] sm:max-w-[80%] rounded-2xl px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm leading-relaxed shadow-sm ${
               msg.role === 'model' 
                 ? 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700' 
                 : 'bg-indigo-600 text-white rounded-tr-none'
@@ -138,11 +138,11 @@ const MockInterview = () => {
         
         {loading && (
            <div className="flex items-start space-x-3">
-             <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
-               <Bot size={16} className="text-white" />
+             <div className="w-7 h-7 sm:w-8 sm:h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+               <Bot size={14} className="text-white" />
              </div>
-             <div className="bg-slate-800 p-4 rounded-2xl rounded-tl-none border border-slate-700">
-               <Loader2 className="animate-spin text-slate-400" size={18} />
+             <div className="bg-slate-800 p-3 sm:p-4 rounded-2xl rounded-tl-none border border-slate-700">
+               <Loader2 className="animate-spin text-slate-400" size={16} />
              </div>
            </div>
         )}
@@ -152,54 +152,54 @@ const MockInterview = () => {
           <div className="animate-fadeIn mt-8 mb-4">
              <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
                 {/* Score Header */}
-                <div className="bg-slate-800/50 p-6 border-b border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-full bg-slate-950 border-4 border-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                            <span className="text-2xl font-bold text-white">{feedback.score}</span>
+                <div className="bg-slate-800/50 p-4 sm:p-6 border-b border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
+                    <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-slate-950 border-4 border-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 shrink-0">
+                            <span className="text-xl sm:text-2xl font-bold text-white">{feedback.score}</span>
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-slate-100">Interview Evaluation</h3>
-                            <p className="text-slate-400 text-sm">Completed {new Date().toLocaleTimeString()}</p>
+                            <h3 className="text-base sm:text-xl font-bold text-slate-100">Evaluation</h3>
+                            <p className="text-slate-400 text-[10px] sm:text-sm">Completed {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                         </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-end">
                        <ScoreBadge score={feedback.score} />
                     </div>
                 </div>
                 
                 {/* Detailed Feedback */}
-                <div className="p-6 space-y-6">
+                <div className="p-4 sm:p-6 space-y-6">
                     <div>
-                        <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center">
-                            <TrendingUp size={16} className="mr-2" /> Executive Summary
+                        <h4 className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center">
+                            <TrendingUp size={14} className="mr-2" /> Executive Summary
                         </h4>
-                        <p className="text-slate-300 text-sm leading-relaxed border-l-2 border-slate-700 pl-4">
+                        <p className="text-slate-300 text-xs sm:text-sm leading-relaxed border-l-2 border-slate-700 pl-4 italic">
                             {feedback.summary}
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div className="bg-emerald-950/10 border border-emerald-900/20 p-4 rounded-xl">
-                            <h4 className="text-emerald-400 font-bold mb-3 flex items-center text-sm">
-                                <CheckCircle2 size={16} className="mr-2" /> Strengths
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                        <div className="bg-emerald-950/10 border border-emerald-900/20 p-3 sm:p-4 rounded-xl">
+                            <h4 className="text-emerald-400 font-bold mb-3 flex items-center text-xs sm:text-sm">
+                                <CheckCircle2 size={14} className="mr-2" /> Strengths
                             </h4>
                             <ul className="space-y-2">
                                 {feedback.strengths.map((item, i) => (
-                                    <li key={i} className="text-slate-400 text-xs flex items-start">
-                                        <span className="mr-2 text-emerald-500/50">•</span>
+                                    <li key={i} className="text-slate-400 text-[11px] sm:text-xs flex items-start">
+                                        <span className="mr-2 text-emerald-500/50 mt-0.5">•</span>
                                         {item}
                                     </li>
                                 ))}
                             </ul>
                         </div>
-                        <div className="bg-red-950/10 border border-red-900/20 p-4 rounded-xl">
-                            <h4 className="text-red-400 font-bold mb-3 flex items-center text-sm">
-                                <XCircle size={16} className="mr-2" /> Areas for Improvement
+                        <div className="bg-red-950/10 border border-red-900/20 p-3 sm:p-4 rounded-xl">
+                            <h4 className="text-red-400 font-bold mb-3 flex items-center text-xs sm:text-sm">
+                                <XCircle size={14} className="mr-2" /> Improvements
                             </h4>
                             <ul className="space-y-2">
                                 {feedback.weaknesses.map((item, i) => (
-                                    <li key={i} className="text-slate-400 text-xs flex items-start">
-                                        <span className="mr-2 text-red-500/50">•</span>
+                                    <li key={i} className="text-slate-400 text-[11px] sm:text-xs flex items-start">
+                                        <span className="mr-2 text-red-500/50 mt-0.5">•</span>
                                         {item}
                                     </li>
                                 ))}
@@ -207,14 +207,14 @@ const MockInterview = () => {
                         </div>
                     </div>
 
-                    <div className="bg-indigo-900/10 border border-indigo-900/30 p-5 rounded-xl">
-                        <h4 className="text-indigo-400 font-bold mb-3 flex items-center text-sm">
-                            <Lightbulb size={16} className="mr-2" /> Recommended Actions
+                    <div className="bg-indigo-900/10 border border-indigo-900/30 p-4 sm:p-5 rounded-xl">
+                        <h4 className="text-indigo-400 font-bold mb-3 flex items-center text-xs sm:text-sm">
+                            <Lightbulb size={14} className="mr-2" /> Action Plan
                         </h4>
-                        <ul className="space-y-2">
+                        <ul className="space-y-3">
                             {feedback.improvement_tips.map((tip, i) => (
-                                <li key={i} className="text-slate-300 text-sm flex items-start">
-                                    <span className="min-w-[20px] text-indigo-500 font-bold mr-1">{i + 1}.</span>
+                                <li key={i} className="text-slate-300 text-[11px] sm:text-sm flex items-start">
+                                    <span className="min-w-[18px] text-indigo-500 font-bold mr-1">{i + 1}.</span>
                                     {tip}
                                 </li>
                             ))}
@@ -229,14 +229,14 @@ const MockInterview = () => {
       </div>
 
       {/* Input / Controls */}
-      <div className="p-4 bg-slate-900 border-t border-slate-800">
+      <div className="p-4 bg-slate-900 border-t border-slate-800 sticky bottom-0">
         {!feedback ? (
             <>
                 <div className="relative mb-3">
                 <input
                     type="text"
-                    className="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-xl pl-4 pr-12 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
-                    placeholder="Type your answer..."
+                    className="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+                    placeholder="Your answer..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()}
@@ -251,23 +251,23 @@ const MockInterview = () => {
                 </button>
                 </div>
                 
-                <div className="flex justify-between items-center">
-                    <p className="text-xs text-slate-500">
-                    AI can make mistakes. Verify important technical details.
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+                    <p className="text-[10px] text-slate-500 text-center sm:text-left order-2 sm:order-1">
+                        Use specific examples for a better score.
                     </p>
                     <button 
                         onClick={handleEndInterview}
                         disabled={messages.length < 3 || loading || evaluating}
-                        className="flex items-center space-x-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-xs font-medium border border-red-500/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-xs font-bold border border-red-500/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed order-1 sm:order-2"
                     >
                         {evaluating ? <Loader2 size={14} className="animate-spin" /> : <StopCircle size={14} />}
-                        <span>{evaluating ? 'Generating Report...' : 'End & Evaluate'}</span>
+                        <span>{evaluating ? 'Analyzing...' : 'End Interview'}</span>
                     </button>
                 </div>
             </>
         ) : (
-            <div className="text-center py-4 text-slate-400 text-sm">
-                Session closed. Review your scorecard above.
+            <div className="text-center py-2 text-slate-500 text-[11px] font-medium">
+                Review your scorecard above and start a new session when ready.
             </div>
         )}
       </div>
@@ -284,7 +284,7 @@ const ScoreBadge = ({ score }: { score: number }) => {
     else if (score >= 60) { color = 'bg-amber-500'; label = 'Competent'; }
 
     return (
-        <span className={`${color} text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg`}>
+        <span className={`${color} text-white text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full shadow-lg`}>
             {label}
         </span>
     );
