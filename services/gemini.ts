@@ -1,6 +1,7 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { PROMPTS } from "../constants";
 import { Question, AnswerGuide, Job, CheatSheet, InterviewFeedback } from "../types";
+import { sanitizePromptInput, sanitizeFileContent } from "../utils/security";
 
 // For Vite, we use import.meta.env
 // We also add a check to handle missing keys gracefully in development
@@ -53,7 +54,10 @@ export const generateQuestions = async (
 
 export const generateAnswerGuide = async (questionText: string): Promise<AnswerGuide | null> => {
     if (!API_KEY) return null;
-    const prompt = PROMPTS.ANSWER_GUIDE.replace('{question_text}', questionText);
+    
+    // Sanitize input to prevent prompt injection
+    const sanitizedQuestion = sanitizePromptInput(questionText);
+    const prompt = PROMPTS.ANSWER_GUIDE.replace('{question_text}', sanitizedQuestion);
 
     try {
         const response: GenerateContentResponse = await ai.models.generateContent({
@@ -75,7 +79,10 @@ export const generateAnswerGuide = async (questionText: string): Promise<AnswerG
 
 export const parseJobDescription = async (rawText: string): Promise<Job | null> => {
     if (!API_KEY) return null;
-    const prompt = PROMPTS.JOB_PARSER.replace('{raw_job_text}', rawText);
+    
+    // Sanitize input to prevent prompt injection
+    const sanitizedText = sanitizePromptInput(rawText);
+    const prompt = PROMPTS.JOB_PARSER.replace('{raw_job_text}', sanitizedText);
 
     try {
         const response: GenerateContentResponse = await ai.models.generateContent({
@@ -153,7 +160,10 @@ export const evaluateInterview = async (messages: { role: string; text: string }
 
 export const parseResume = async (resumeText: string): Promise<any | null> => {
     if (!API_KEY) return null;
-    const prompt = PROMPTS.RESUME_PARSER.replace('{resume_text}', resumeText.substring(0, 10000)); // Limit length
+    
+    // Sanitize and limit resume text length
+    const sanitizedResume = sanitizeFileContent(resumeText, 10000);
+    const prompt = PROMPTS.RESUME_PARSER.replace('{resume_text}', sanitizedResume);
 
     try {
         const response: GenerateContentResponse = await ai.models.generateContent({

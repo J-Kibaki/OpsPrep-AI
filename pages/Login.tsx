@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { auth } from '../services/firebase';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, signInWithRedirect, GoogleAuthProvider } from 'firebase/auth';
 import { Cpu, Mail, Lock, Chrome, Loader2 } from 'lucide-react';
+import { isValidEmail } from '../utils/security';
 
 const Login: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -13,6 +14,19 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    
+    // Validate email format
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+    
+    // Validate password length
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -22,7 +36,19 @@ const Login: React.FC = () => {
         await createUserWithEmailAndPassword(auth, email, password);
       }
     } catch (err: any) {
-      setError(err.message || 'Authentication failed');
+      // Map Firebase error codes to user-friendly messages
+      const errorMessages: Record<string, string> = {
+        'auth/invalid-credential': 'Invalid email or password',
+        'auth/email-already-in-use': 'Email already in use',
+        'auth/weak-password': 'Password is too weak',
+        'auth/user-not-found': 'Invalid email or password',
+        'auth/wrong-password': 'Invalid email or password',
+        'auth/too-many-requests': 'Too many attempts. Please try again later',
+        'auth/network-request-failed': 'Network error. Please check your connection'
+      };
+      
+      const errorMessage = errorMessages[err.code] || 'Authentication failed. Please try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -40,10 +66,10 @@ const Login: React.FC = () => {
         try {
           await signInWithRedirect(auth, provider);
         } catch (redirectErr: any) {
-          setError(redirectErr.message || 'Google Sign-In failed');
+          setError('Google Sign-In failed. Please try again.');
         }
       } else {
-        setError(err.message || 'Google Sign-In failed');
+        setError('Google Sign-In failed. Please try again.');
       }
     }
   };
