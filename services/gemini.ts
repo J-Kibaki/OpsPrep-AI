@@ -2,7 +2,15 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { PROMPTS } from "../constants";
 import { Question, AnswerGuide, Job, CheatSheet, InterviewFeedback } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// For Vite, we use import.meta.env
+// We also add a check to handle missing keys gracefully in development
+const API_KEY = (import.meta.env?.VITE_GEMINI_API_KEY as string) || "";
+
+if (!API_KEY && typeof window !== 'undefined') {
+    console.warn("Gemini API Key is missing. Please set VITE_GEMINI_API_KEY in your .env file.");
+}
+
+const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 const getCleanJson = (text: string): string => {
     return text.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -14,6 +22,8 @@ export const generateQuestions = async (
     cloud: string,
     topics: string[]
 ): Promise<Question[]> => {
+    if (!API_KEY) return [];
+
     const prompt = PROMPTS.QUESTION_GENERATOR
         .replace('{count}', '5')
         .replace('{seniority}', level)
@@ -40,6 +50,7 @@ export const generateQuestions = async (
 };
 
 export const generateAnswerGuide = async (questionText: string): Promise<AnswerGuide | null> => {
+    if (!API_KEY) return null;
     const prompt = PROMPTS.ANSWER_GUIDE.replace('{question_text}', questionText);
 
     try {
@@ -61,6 +72,7 @@ export const generateAnswerGuide = async (questionText: string): Promise<AnswerG
 };
 
 export const parseJobDescription = async (rawText: string): Promise<Job | null> => {
+    if (!API_KEY) return null;
     const prompt = PROMPTS.JOB_PARSER.replace('{raw_job_text}', rawText);
 
     try {
@@ -81,6 +93,7 @@ export const parseJobDescription = async (rawText: string): Promise<Job | null> 
 };
 
 export const generateCheatSheet = async (topic: string): Promise<CheatSheet | null> => {
+    if (!API_KEY) return null;
     const prompt = PROMPTS.CHEAT_SHEET_GENERATOR.replace('{topic}', topic);
 
     try {
@@ -111,6 +124,7 @@ export const createMockInterviewSession = (systemInstruction: string) => {
 };
 
 export const evaluateInterview = async (messages: { role: string; text: string }[]): Promise<InterviewFeedback | null> => {
+    if (!API_KEY) return null;
     const transcript = messages
         .map(m => `${m.role === 'model' ? 'Interviewer' : 'Candidate'}: ${m.text}`)
         .join('\n\n');
@@ -136,6 +150,7 @@ export const evaluateInterview = async (messages: { role: string; text: string }
 };
 
 export const parseResume = async (resumeText: string): Promise<any | null> => {
+    if (!API_KEY) return null;
     const prompt = PROMPTS.RESUME_PARSER.replace('{resume_text}', resumeText.substring(0, 10000)); // Limit length
 
     try {
