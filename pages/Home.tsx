@@ -2,11 +2,15 @@ import React from 'react';
 import { ArrowRight, Code, ShieldCheck, Cloud, Database, Layers, Briefcase, MessageSquare, Sparkles, Zap } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 
-export const Home = ({ onNavigate }: { onNavigate: (view: any) => void }) => {
+// Updated to use the state from App.tsx indirectly or directly. 
+// For now, let's keep it as is and fix the call in App.tsx if needed.
+export const Home = ({ onNavigate }: { onNavigate: (view: string) => void }) => {
   const { profile, activities } = useUser();
 
+  if (!profile) return null;
+
   // Logic: Consider a user "returning" if they have customized their name OR have logged activities.
-  const isGuest = profile.name === 'Guest Engineer';
+  const isGuest = profile.name === 'New User';
   const hasHistory = activities.length > 0;
   const isReturning = !isGuest || hasHistory;
   
@@ -31,7 +35,7 @@ export const Home = ({ onNavigate }: { onNavigate: (view: any) => void }) => {
         </div>
         
         <h1 className="text-4xl lg:text-5xl font-extrabold text-slate-100 mb-4 tracking-tight">
-          {isReturning ? (
+          {isReturning && profile.name !== 'New User' ? (
             <>
               Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">{firstName}</span>.
             </>
@@ -56,12 +60,6 @@ export const Home = ({ onNavigate }: { onNavigate: (view: any) => void }) => {
                     className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-indigo-500/20 flex items-center"
                 >
                     Create Profile <ArrowRight size={18} className="ml-2" />
-                </button>
-                <button 
-                    onClick={() => onNavigate('readme')}
-                    className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg font-medium transition-all border border-slate-700"
-                >
-                    Read Documentation
                 </button>
             </div>
         )}
@@ -96,7 +94,7 @@ export const Home = ({ onNavigate }: { onNavigate: (view: any) => void }) => {
           iconColor="text-pink-400"
           bg="bg-pink-500/10"
           borderColor="hover:border-pink-500/50"
-          onClick={() => onNavigate('mock')}
+          onClick={() => onNavigate('interview')}
           actionText="Join Room"
         />
       </div>
