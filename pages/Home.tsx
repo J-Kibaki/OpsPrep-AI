@@ -9,7 +9,7 @@ export const Home = ({ onNavigate }: { onNavigate: (view: string) => void }) => 
       <div className="flex items-center justify-center h-full min-h-[50vh]">
           <div className="flex flex-col items-center space-y-4">
             <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
-            <div className="text-slate-500 font-medium animate-pulse">Loading profile...</div>
+            <div className="text-slate-400 font-medium animate-pulse">Loading profile...</div>
           </div>
       </div>
   );
@@ -58,7 +58,7 @@ export const Home = ({ onNavigate }: { onNavigate: (view: string) => void }) => 
           )}
         </h1>
         
-        <p className="text-base sm:text-lg text-slate-400 max-w-2xl leading-relaxed">
+        <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
           {isReturning 
             ? "Ready to level up? Continue mastering the modern DevOps stack with generated scenarios and real-time interview simulations."
             : "Your personal AI command center for DevOps & SRE interview preparation. Master architectural scenarios and simulate pressure tests."
@@ -122,7 +122,7 @@ export const Home = ({ onNavigate }: { onNavigate: (view: string) => void }) => 
                   <Briefcase size={24} />
                 </div>
                 <h2 className="text-xl font-bold text-slate-100 mb-2">Job Description Parser</h2>
-                <p className="text-slate-400 max-w-md text-sm leading-relaxed">
+                <p className="text-slate-300 max-w-md text-sm leading-relaxed">
                    Paste a JD to extract tech stack, and generate a custom study plan based on missing requirements.
                 </p>
               </div>
@@ -162,7 +162,7 @@ const DashboardCard = ({ title, description, icon: Icon, onClick, actionText, ic
         <Icon size={24} />
       </div>
       <h3 className="text-xl font-bold text-slate-100 mb-3 group-hover:text-white transition-colors">{title}</h3>
-      <p className="text-slate-400 mb-8 h-12 leading-relaxed text-sm">{description}</p>
+      <p className="text-slate-300 mb-8 h-12 leading-relaxed text-sm">{description}</p>
       
       <div className={`flex items-center font-bold text-sm ${iconColor} opacity-90 group-hover:opacity-100`}>
         {actionText} <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
@@ -177,8 +177,8 @@ const TopicRow = ({ title, count, icon: Icon, color, bg }: any) => (
       <div className={`p-2 rounded-lg ${bg} ${color}`}>
         <Icon size={16} />
       </div>
-      <span className="font-semibold text-slate-300 group-hover:text-slate-200 transition-colors text-sm">{title}</span>
+      <span className="font-semibold text-slate-200 group-hover:text-slate-100 transition-colors text-sm">{title}</span>
     </div>
-    <span className="text-[10px] font-bold font-mono text-slate-500 bg-slate-950 px-2 py-1 rounded-md border border-slate-800 group-hover:border-slate-700">{count}</span>
+    <span className="text-[10px] font-bold font-mono text-slate-400 bg-slate-950 px-2 py-1 rounded-md border border-slate-800 group-hover:border-slate-700">{count}</span>
   </div>
 );

@@ -98,7 +98,7 @@ const MockInterview = () => {
       <div className="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-10">
         <div className="flex flex-col">
            <h2 className="text-base sm:text-lg font-bold text-slate-100 truncate max-w-[150px] sm:max-w-none">Live Mock Interview</h2>
-           <p className="text-[10px] sm:text-xs text-slate-400">Principal SRE Persona</p>
+           <p className="text-[10px] sm:text-xs text-slate-300">Principal SRE Persona</p>
         </div>
         <div className="flex items-center gap-2 sm:gap-3">
           {!feedback && (
@@ -128,7 +128,7 @@ const MockInterview = () => {
             </div>
             <div className={`max-w-[85%] sm:max-w-[80%] rounded-2xl px-3 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm leading-relaxed shadow-sm ${
               msg.role === 'model' 
-                ? 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700' 
+                ? 'bg-slate-800 text-slate-100 rounded-tl-none border border-slate-700' 
                 : 'bg-indigo-600 text-white rounded-tr-none'
             }`}>
               {msg.text}
@@ -142,7 +142,7 @@ const MockInterview = () => {
                <Bot size={14} className="text-white" />
              </div>
              <div className="bg-slate-800 p-3 sm:p-4 rounded-2xl rounded-tl-none border border-slate-700">
-               <Loader2 className="animate-spin text-slate-400" size={16} />
+               <Loader2 className="animate-spin text-slate-300" size={16} />
              </div>
            </div>
         )}
@@ -159,7 +159,7 @@ const MockInterview = () => {
                         </div>
                         <div>
                             <h3 className="text-base sm:text-xl font-bold text-slate-100">Evaluation</h3>
-                            <p className="text-slate-400 text-[10px] sm:text-sm">Completed {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                            <p className="text-slate-300 text-[10px] sm:text-sm">Completed {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                         </div>
                     </div>
                     <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-end">
@@ -170,10 +170,10 @@ const MockInterview = () => {
                 {/* Detailed Feedback */}
                 <div className="p-4 sm:p-6 space-y-6">
                     <div>
-                        <h4 className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center">
+                        <h4 className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center">
                             <TrendingUp size={14} className="mr-2" /> Executive Summary
                         </h4>
-                        <p className="text-slate-300 text-xs sm:text-sm leading-relaxed border-l-2 border-slate-700 pl-4 italic">
+                        <p className="text-slate-200 text-xs sm:text-sm leading-relaxed border-l-2 border-slate-700 pl-4 italic">
                             {feedback.summary}
                         </p>
                     </div>
@@ -185,7 +185,7 @@ const MockInterview = () => {
                             </h4>
                             <ul className="space-y-2">
                                 {feedback.strengths.map((item, i) => (
-                                    <li key={i} className="text-slate-400 text-[11px] sm:text-xs flex items-start">
+                                    <li key={i} className="text-slate-300 text-[11px] sm:text-xs flex items-start">
                                         <span className="mr-2 text-emerald-500/50 mt-0.5">•</span>
                                         {item}
                                     </li>
@@ -198,7 +198,7 @@ const MockInterview = () => {
                             </h4>
                             <ul className="space-y-2">
                                 {feedback.weaknesses.map((item, i) => (
-                                    <li key={i} className="text-slate-400 text-[11px] sm:text-xs flex items-start">
+                                    <li key={i} className="text-slate-300 text-[11px] sm:text-xs flex items-start">
                                         <span className="mr-2 text-red-500/50 mt-0.5">•</span>
                                         {item}
                                     </li>
@@ -213,8 +213,8 @@ const MockInterview = () => {
                         </h4>
                         <ul className="space-y-3">
                             {feedback.improvement_tips.map((tip, i) => (
-                                <li key={i} className="text-slate-300 text-[11px] sm:text-sm flex items-start">
-                                    <span className="min-w-[18px] text-indigo-500 font-bold mr-1">{i + 1}.</span>
+                                <li key={i} className="text-slate-200 text-[11px] sm:text-sm flex items-start">
+                                    <span className="min-w-[18px] text-indigo-400 font-bold mr-1">{i + 1}.</span>
                                     {tip}
                                 </li>
                             ))}
@@ -235,7 +235,7 @@ const MockInterview = () => {
                 <div className="relative mb-3">
                 <input
                     type="text"
-                    className="w-full bg-slate-950 border border-slate-800 text-slate-200 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+                    className="w-full bg-slate-950 border border-slate-800 text-slate-100 rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
                     placeholder="Your answer..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -252,7 +252,7 @@ const MockInterview = () => {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
-                    <p className="text-[10px] text-slate-500 text-center sm:text-left order-2 sm:order-1">
+                    <p className="text-[10px] text-slate-400 text-center sm:text-left order-2 sm:order-1">
                         Use specific examples for a better score.
                     </p>
                     <button 
@@ -266,7 +266,7 @@ const MockInterview = () => {
                 </div>
             </>
         ) : (
-            <div className="text-center py-2 text-slate-500 text-[11px] font-medium">
+            <div className="text-center py-2 text-slate-400 text-[11px] font-medium">
                 Review your scorecard above and start a new session when ready.
             </div>
         )}
@@ -276,12 +276,12 @@ const MockInterview = () => {
 };
 
 const ScoreBadge = ({ score }: { score: number }) => {
-    let color = 'bg-red-500';
+    let color = 'bg-red-600';
     let label = 'Needs Work';
     
-    if (score >= 90) { color = 'bg-emerald-500'; label = 'Excellent'; }
-    else if (score >= 75) { color = 'bg-indigo-500'; label = 'Strong'; }
-    else if (score >= 60) { color = 'bg-amber-500'; label = 'Competent'; }
+    if (score >= 90) { color = 'bg-emerald-600'; label = 'Excellent'; }
+    else if (score >= 75) { color = 'bg-indigo-600'; label = 'Strong'; }
+    else if (score >= 60) { color = 'bg-amber-600'; label = 'Competent'; }
 
     return (
         <span className={`${color} text-white text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full shadow-lg`}>

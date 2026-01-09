@@ -16,6 +16,8 @@ const getCleanJson = (text: string): string => {
     return text.replace(/```json/g, '').replace(/```/g, '').trim();
 };
 
+const MODEL_NAME = "gemini-1.5-flash";
+
 export const generateQuestions = async (
     role: string,
     level: string,
@@ -33,7 +35,7 @@ export const generateQuestions = async (
 
     try {
         const response: GenerateContentResponse = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: MODEL_NAME,
             contents: prompt,
             config: {
                 responseMimeType: 'application/json',
@@ -55,7 +57,7 @@ export const generateAnswerGuide = async (questionText: string): Promise<AnswerG
 
     try {
         const response: GenerateContentResponse = await ai.models.generateContent({
-            model: 'gemini-2.5-flash', 
+            model: MODEL_NAME, 
             contents: prompt,
             config: {
                 responseMimeType: 'application/json',
@@ -77,7 +79,7 @@ export const parseJobDescription = async (rawText: string): Promise<Job | null> 
 
     try {
         const response: GenerateContentResponse = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: MODEL_NAME,
             contents: prompt,
             config: {
                 responseMimeType: 'application/json',
@@ -98,7 +100,7 @@ export const generateCheatSheet = async (topic: string): Promise<CheatSheet | nu
 
     try {
         const response: GenerateContentResponse = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: MODEL_NAME,
             contents: prompt,
             config: {
                 responseMimeType: 'application/json',
@@ -116,7 +118,7 @@ export const generateCheatSheet = async (topic: string): Promise<CheatSheet | nu
 
 export const createMockInterviewSession = (systemInstruction: string) => {
     return ai.chats.create({
-        model: 'gemini-2.5-flash',
+        model: MODEL_NAME,
         config: {
             systemInstruction,
         }
@@ -133,7 +135,7 @@ export const evaluateInterview = async (messages: { role: string; text: string }
 
     try {
         const response: GenerateContentResponse = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: MODEL_NAME,
             contents: prompt,
             config: {
                 responseMimeType: 'application/json',
@@ -155,7 +157,7 @@ export const parseResume = async (resumeText: string): Promise<any | null> => {
 
     try {
         const response: GenerateContentResponse = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: MODEL_NAME,
             contents: prompt,
             config: {
                 responseMimeType: 'application/json',

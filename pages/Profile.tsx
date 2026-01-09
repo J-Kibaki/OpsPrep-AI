@@ -68,7 +68,7 @@ const Profile = () => {
       <header className="flex justify-between items-center mb-6">
          <div>
             <h1 className="text-3xl font-bold text-slate-100 mb-2">Engineer Profile</h1>
-            <p className="text-slate-400">Manage your professional identity and track your learning journey.</p>
+            <p className="text-slate-300">Manage your professional identity and track your learning journey.</p>
          </div>
          <button 
             onClick={() => isEditing ? handleSave() : setIsEditing(true)}
@@ -144,21 +144,21 @@ const Profile = () => {
                         {isParsing ? (
                             <Loader2 size={32} className="text-indigo-500 animate-spin mb-2" />
                         ) : (
-                            <Upload size={32} className="text-slate-500 group-hover:text-indigo-400 mb-2 transition-colors" />
+                            <Upload size={32} className="text-slate-400 group-hover:text-indigo-400 mb-2 transition-colors" />
                         )}
-                        <span className="text-slate-300 font-medium">
+                        <span className="text-slate-200 font-medium">
                             {isParsing ? 'Analyzing Resume...' : 'Upload Resume (Text/Markdown)'}
                         </span>
-                        <p className="text-xs text-slate-500 mt-1">AI will parse your skills and seniority automatically.</p>
+                        <p className="text-xs text-slate-400 mt-1">AI will parse your skills and seniority automatically.</p>
                     </label>
                 </div>
 
                 {profile.skills.length > 0 && (
                     <div>
-                        <h3 className="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">Detected Skills</h3>
+                        <h3 className="text-sm font-semibold text-slate-300 mb-3 uppercase tracking-wider">Detected Skills</h3>
                         <div className="flex flex-wrap gap-2">
                             {profile.skills.map((skill, i) => (
-                                <span key={i} className="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm border border-slate-700 flex items-center">
+                                <span key={i} className="px-3 py-1 bg-slate-800 text-slate-200 rounded-full text-sm border border-slate-700 flex items-center">
                                     <Hash size={12} className="mr-1 opacity-50" /> {skill}
                                 </span>
                             ))}
@@ -174,7 +174,7 @@ const Profile = () => {
                 </h2>
                 <div className="space-y-4">
                     {activities.length === 0 ? (
-                        <p className="text-slate-500 italic text-sm">No activity recorded yet.</p>
+                        <p className="text-slate-400 italic text-sm">No activity recorded yet.</p>
                     ) : (
                         activities.slice(0, 5).map(act => (
                             <div key={act.id} className="flex items-center justify-between p-3 bg-slate-950 rounded-lg border border-slate-800">
@@ -188,8 +188,8 @@ const Profile = () => {
                                          act.type === 'question' ? <Cpu size={16} /> : <FileText size={16} />}
                                     </div>
                                     <div>
-                                        <div className="text-sm font-medium text-slate-200">{act.topic}</div>
-                                        <div className="text-xs text-slate-500 capitalize">{act.type} &bull; {new Date(act.timestamp).toLocaleDateString()}</div>
+                                        <div className="text-sm font-medium text-slate-100">{act.topic}</div>
+                                        <div className="text-xs text-slate-400 capitalize">{act.type} &bull; {new Date(act.timestamp).toLocaleDateString()}</div>
                                     </div>
                                 </div>
                                 {act.score && (
@@ -212,7 +212,7 @@ const Profile = () => {
                 <div className="space-y-6">
                     <div>
                         <div className="flex justify-between text-sm mb-2">
-                            <span className="text-slate-400">Readiness Score</span>
+                            <span className="text-slate-300">Readiness Score</span>
                             <span className="text-white font-bold">{readiness}%</span>
                         </div>
                         <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
@@ -223,21 +223,21 @@ const Profile = () => {
                     <div className="grid grid-cols-2 gap-4">
                         <div className="bg-slate-950/50 p-4 rounded-lg text-center">
                             <div className="text-2xl font-bold text-white mb-1">{profile.streak_days}</div>
-                            <div className="text-xs text-slate-500 uppercase tracking-wider">Day Streak</div>
+                            <div className="text-xs text-slate-400 uppercase tracking-wider">Day Streak</div>
                         </div>
                         <div className="bg-slate-950/50 p-4 rounded-lg text-center">
                             <div className="text-2xl font-bold text-white mb-1">{activities.length}</div>
-                            <div className="text-xs text-slate-500 uppercase tracking-wider">Activities</div>
+                            <div className="text-xs text-slate-400 uppercase tracking-wider">Activities</div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">
+                <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider mb-4">
                     Security Notice
                 </h3>
-                <div className="flex items-start space-x-3 text-sm text-slate-500">
+                <div className="flex items-start space-x-3 text-sm text-slate-400">
                     <Shield size={16} className="shrink-0 mt-0.5" />
                     <p>
                         This is a client-side demo environment. Your data is stored in your browser's LocalStorage. 
@@ -253,13 +253,13 @@ const Profile = () => {
 
 const InputField = ({ label, value, onChange, disabled, type = "text" }: any) => (
     <div className="space-y-1">
-        <label className="text-xs font-semibold text-slate-500 uppercase">{label}</label>
+        <label className="text-xs font-semibold text-slate-400 uppercase">{label}</label>
         <input 
             type={type}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             disabled={disabled}
-            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         />
     </div>
 );
