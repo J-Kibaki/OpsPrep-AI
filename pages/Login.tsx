@@ -36,14 +36,18 @@ const Login: React.FC = () => {
         await createUserWithEmailAndPassword(auth, email, password);
       }
     } catch (err: any) {
-      // Sanitize error messages to avoid exposing internal details
-      const errorMessage = err.code === 'auth/invalid-credential' 
-        ? 'Invalid email or password'
-        : err.code === 'auth/email-already-in-use'
-        ? 'Email already in use'
-        : err.code === 'auth/weak-password'
-        ? 'Password is too weak'
-        : 'Authentication failed. Please try again.';
+      // Map Firebase error codes to user-friendly messages
+      const errorMessages: Record<string, string> = {
+        'auth/invalid-credential': 'Invalid email or password',
+        'auth/email-already-in-use': 'Email already in use',
+        'auth/weak-password': 'Password is too weak',
+        'auth/user-not-found': 'Invalid email or password',
+        'auth/wrong-password': 'Invalid email or password',
+        'auth/too-many-requests': 'Too many attempts. Please try again later',
+        'auth/network-request-failed': 'Network error. Please check your connection'
+      };
+      
+      const errorMessage = errorMessages[err.code] || 'Authentication failed. Please try again.';
       setError(errorMessage);
     } finally {
       setLoading(false);

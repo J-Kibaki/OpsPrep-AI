@@ -69,9 +69,24 @@ export const sanitizeForDisplay = (text: string): string => {
 
 /**
  * Validate email format
+ * 
+ * This is a simple validation for basic email format checking.
+ * For production use, consider using a dedicated library like validator.js
+ * or implementing RFC 5322 compliant validation.
+ * 
+ * This regex checks for:
+ * - At least one character before @
+ * - @ symbol
+ * - Domain name with at least one dot
+ * - TLD with at least 2 characters
  */
 export const isValidEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // More robust email validation pattern
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  
+  // Additional length checks
+  if (!email || email.length > 254) return false;
+  
   return emailRegex.test(email);
 };
 
@@ -94,8 +109,12 @@ export const sanitizeFileContent = (content: string, maxLength: number = 50000):
 /**
  * Rate limiting check (simple client-side implementation)
  * For production, implement server-side rate limiting
+ * 
+ * Note: This implementation includes automatic cleanup to prevent memory leaks
  */
 const requestTimestamps: Map<string, number[]> = new Map();
+const CLEANUP_INTERVAL = 300000; // 5 minutes
+let lastCleanup = Date.now();
 
 export const checkRateLimit = (
   userId: string, 
@@ -103,6 +122,21 @@ export const checkRateLimit = (
   windowMs: number = 60000
 ): boolean => {
   const now = Date.now();
+  
+  // Periodic cleanup to prevent memory leaks
+  if (now - lastCleanup > CLEANUP_INTERVAL) {
+    // Remove entries older than the window
+    for (const [key, timestamps] of requestTimestamps.entries()) {
+      const validTimestamps = timestamps.filter(ts => now - ts < windowMs);
+      if (validTimestamps.length === 0) {
+        requestTimestamps.delete(key);
+      } else {
+        requestTimestamps.set(key, validTimestamps);
+      }
+    }
+    lastCleanup = now;
+  }
+  
   const timestamps = requestTimestamps.get(userId) || [];
   
   // Remove timestamps outside the window

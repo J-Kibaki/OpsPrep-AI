@@ -53,12 +53,20 @@ describe('Security Utils', () => {
     it('should validate correct email addresses', () => {
       expect(isValidEmail('user@example.com')).toBe(true);
       expect(isValidEmail('user.name@example.co.uk')).toBe(true);
+      expect(isValidEmail('user+tag@example.com')).toBe(true);
     });
 
     it('should reject invalid email addresses', () => {
       expect(isValidEmail('invalid')).toBe(false);
       expect(isValidEmail('user@')).toBe(false);
       expect(isValidEmail('@example.com')).toBe(false);
+      expect(isValidEmail('user @example.com')).toBe(false);
+      expect(isValidEmail('')).toBe(false);
+    });
+    
+    it('should reject emails that are too long', () => {
+      const longEmail = 'a'.repeat(300) + '@example.com';
+      expect(isValidEmail(longEmail)).toBe(false);
     });
   });
 
