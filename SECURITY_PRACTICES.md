@@ -10,7 +10,10 @@
 ### 2. Input Sanitization
 - **Prompt Injection Prevention**: All user inputs to AI are sanitized to prevent prompt injection attacks
 - **File Upload Validation**: Resume uploads are limited in size and sanitized
-- **XSS Prevention**: Additional sanitization layer on top of React's built-in protection
+- **XSS Prevention**: React's built-in XSS protection used (automatic escaping of text content)
+  - All user text is rendered via JSX `{}` syntax which automatically escapes HTML
+  - For any future HTML rendering needs, use DOMPurify library
+  - Do NOT use `dangerouslySetInnerHTML` without proper sanitization
 - **Control Character Removal**: Removal of null bytes and control characters
 
 ### 3. API Key Security
