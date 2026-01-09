@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { UserProfile, LearningActivity } from '../types';
 import { auth, db } from '../services/firebase';
 import { onAuthStateChanged, User, signOut } from 'firebase/auth';
-import { doc, getDoc, setDoc, updateDoc, collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 
 interface UserContextType {
   user: User | null;
@@ -37,55 +37,61 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchUserData = useCallback(async (uid: string) => {
-    setError(null);
-    try {
-      const docRef = doc(db, 'users', uid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        setProfile(docSnap.data() as UserProfile);
-      } else {
-        // Create initial profile
-        const newProfile = { ...DEFAULT_PROFILE, id: uid };
-        try {
-          await setDoc(docRef, newProfile);
-          setProfile(newProfile);
-        } catch (setErr: any) {
-          console.error("Firestore SetDoc Error:", setErr);
-          // If Firestore fails (e.g. rules), we'll still set the profile locally so the UI works
-          setProfile(newProfile);
-          if (setErr.code === 'permission-denied') {
-            setError("Firestore permissions denied. Please check your security rules.");
-          }
-        }
-      }
-
-      // Fetch activities
-      try {
-        const actRef = collection(db, 'users', uid, 'activities');
-        const q = query(actRef, orderBy('timestamp', 'desc'), limit(50));
-        const querySnapshot = await getDocs(q);
-        const acts = querySnapshot.docs.map(doc => doc.data() as LearningActivity);
-        setActivities(acts);
-      } catch (actErr) {
-        console.error("Error fetching activities:", actErr);
-      }
-    } catch (err: any) {
-      console.error("Error fetching user data:", err);
-      setError(err.message || "Failed to connect to the database.");
-      // Fallback to default profile if we can't even get the doc
-      setProfile({ ...DEFAULT_PROFILE, id: uid });
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    let unsubscribeProfile: (() => void) | null = null;
+    let unsubscribeActivities: (() => void) | null = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      
+      // Clean up previous listeners if user changes
+      if (unsubscribeProfile) unsubscribeProfile();
+      if (unsubscribeActivities) unsubscribeActivities();
+
       if (currentUser) {
-        fetchUserData(currentUser.uid);
+        setLoading(true);
+        setError(null);
+
+        const docRef = doc(db, 'users', currentUser.uid);
+        
+        // Use onSnapshot for real-time updates and better offline handling
+        unsubscribeProfile = onSnapshot(docRef, (docSnap) => {
+          if (docSnap.exists()) {
+            setProfile(docSnap.data() as UserProfile);
+          } else {
+            // Create initial profile if it doesn't exist
+            const newProfile = { ...DEFAULT_PROFILE, id: currentUser.uid };
+            setDoc(docRef, newProfile).catch(err => {
+              console.error("Error creating initial profile:", err);
+              if (err.code === 'permission-denied') {
+                setError("Firestore permissions denied. Check your security rules.");
+              }
+            });
+            setProfile(newProfile);
+          }
+          setLoading(false);
+        }, (err) => {
+          console.error("Error fetching user profile:", err);
+          // If offline, Firestore onSnapshot doesn't necessarily throw "failed", 
+          // it just waits or provides cache. If it DOES error:
+          if (err.code !== 'unavailable') {
+            setError(err.message || "Failed to connect to the database.");
+          }
+          setLoading(false);
+        });
+
+        // Fetch activities with onSnapshot
+        const actRef = collection(db, 'users', currentUser.uid, 'activities');
+        const q = query(actRef, orderBy('timestamp', 'desc'), limit(50));
+        
+        unsubscribeActivities = onSnapshot(q, (querySnapshot) => {
+          const acts = querySnapshot.docs.map(doc => doc.data() as LearningActivity);
+          setActivities(acts);
+        }, (err) => {
+          console.error("Error fetching activities:", err);
+          // Activities failing isn't necessarily fatal for the app
+        });
+
       } else {
         setProfile(null);
         setActivities([]);
@@ -93,8 +99,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
-    return () => unsubscribe();
-  }, [fetchUserData]);
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeProfile) unsubscribeProfile();
+      if (unsubscribeActivities) unsubscribeActivities();
+    };
+  }, []);
 
   const updateProfile = async (data: Partial<UserProfile>) => {
     if (!user) return;
