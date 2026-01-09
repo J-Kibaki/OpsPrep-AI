@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "opsprep-ai"
+  },
+  "targets": {
+    "opsprep-ai": {
+      "hosting": {
+        "app": [
+          "opsprep-ai-891e6"
+        ]
+      }
+    }
+  }
+}
