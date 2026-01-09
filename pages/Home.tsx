@@ -1,13 +1,15 @@
 import React from 'react';
-import { ArrowRight, Code, ShieldCheck, Cloud, Database, Layers, Briefcase, MessageSquare, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, Code, ShieldCheck, Cloud, Database, Layers, Briefcase, MessageSquare, Sparkles, Zap, AlertTriangle } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 
-// Updated to use the state from App.tsx indirectly or directly. 
-// For now, let's keep it as is and fix the call in App.tsx if needed.
 export const Home = ({ onNavigate }: { onNavigate: (view: string) => void }) => {
-  const { profile, activities } = useUser();
+  const { profile, activities, error } = useUser();
 
-  if (!profile) return null;
+  if (!profile) return (
+      <div className="flex items-center justify-center h-full">
+          <div className="animate-pulse text-slate-500">Loading profile...</div>
+      </div>
+  );
 
   // Logic: Consider a user "returning" if they have customized their name OR have logged activities.
   const isGuest = profile.name === 'New User';
@@ -19,6 +21,15 @@ export const Home = ({ onNavigate }: { onNavigate: (view: string) => void }) => 
 
   return (
     <div className="p-6 lg:p-12 max-w-7xl mx-auto space-y-10">
+      {error && (
+          <div className="bg-amber-500/10 border border-amber-500/50 p-4 rounded-xl flex items-center space-x-3 text-amber-500 mb-6">
+              <AlertTriangle size={20} />
+              <div className="text-sm">
+                  <span className="font-bold">Sync Issue:</span> {error} You can still use the app, but progress might not be saved to the cloud.
+              </div>
+          </div>
+      )}
+
       {/* Hero Section */}
       <header className="mb-12 animate-fadeIn">
         <div className="flex items-center space-x-2 mb-4">
