@@ -175,8 +175,6 @@ const JobParser = ({ onNavigate }: { onNavigate?: (view: any, params?: any) => v
       if (minSalaryFilter) {
           const filterVal = parseInt(minSalaryFilter.replace(/,/g, ''), 10);
           if (!isNaN(filterVal)) {
-              // If job has max salary, check if it's at least the filter value
-              // If only min salary, check that.
               const jobMax = job.salary.max || job.salary.min || 0;
               matchesSalary = jobMax >= filterVal;
           }
@@ -196,51 +194,51 @@ const JobParser = ({ onNavigate }: { onNavigate?: (view: any, params?: any) => v
   const hasActiveFilters = searchQuery || workModeFilter !== 'All' || seniorityFilter !== 'All' || minSalaryFilter !== '';
 
   return (
-    <div className="h-full flex flex-col lg:flex-row overflow-hidden relative">
-      {/* Input Side */}
-      <div className="flex-1 bg-slate-900 p-6 flex flex-col border-r border-slate-800 lg:max-w-md xl:max-w-lg">
+    <div className="h-full flex flex-col lg:flex-row overflow-hidden relative bg-slate-950">
+      {/* Input Side - Stays relatively fixed on LG+ screens */}
+      <div className="flex-none lg:h-full bg-slate-900 p-6 flex flex-col border-b lg:border-b-0 lg:border-r border-slate-800 lg:w-[400px] xl:w-[450px]">
         <h2 className="text-2xl font-bold text-slate-100 mb-2">Job Parser</h2>
-        <p className="text-slate-400 mb-6">Paste a raw job description to extract structured data and skills.</p>
+        <p className="text-slate-400 mb-6 text-sm">Paste a raw job description to extract structured data and skills.</p>
         
-        <div className="flex-1 flex flex-col relative group">
+        <div className="flex-1 min-h-[200px] flex flex-col relative group mb-4">
            <textarea
-            className="flex-1 w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-300 font-mono text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none mb-4 transition-all"
+            className="flex-1 w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-300 font-mono text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none transition-all custom-scrollbar"
             placeholder="Paste Job Description here..."
             value={rawText}
             onChange={(e) => setRawText(e.target.value)}
           />
           {!rawText && (
-             <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-                <Briefcase size={64} />
+             <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-10">
+                <Briefcase size={80} />
              </div>
           )}
         </div>
         
-        <div className="flex justify-end">
+        <div className="flex-none">
           <button
             onClick={handleParse}
             disabled={loading || !rawText.trim()}
-            className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-medium px-6 py-3 rounded-lg flex items-center justify-center transition-colors shadow-lg shadow-indigo-500/20"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-bold px-6 py-4 rounded-xl flex items-center justify-center transition-all shadow-lg shadow-indigo-500/10 active:scale-[0.98]"
           >
-            {loading ? <Loader2 className="animate-spin mr-2" size={18} /> : <Zap size={18} className="mr-2 fill-current" />}
+            {loading ? <Loader2 className="animate-spin mr-2" size={20} /> : <Zap size={20} className="mr-2 fill-current" />}
             Analyze Job
           </button>
         </div>
       </div>
 
-      {/* Output Side - Job Repository */}
-      <div className="flex-1 bg-slate-950 flex flex-col overflow-hidden">
-        {/* Search Header */}
-        <div className="p-6 border-b border-slate-800 bg-slate-900/50">
-          <div className="max-w-3xl mx-auto space-y-4">
+      {/* Output Side - Independent Scrollable Area */}
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+        {/* Search Header - Sticky-like */}
+        <div className="p-4 sm:p-6 border-b border-slate-800 bg-slate-900/40 backdrop-blur-md flex-none">
+          <div className="max-w-4xl mx-auto space-y-4">
             
             {/* Main Search Bar */}
             <div className="relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={20} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={18} />
               <input 
                 type="text"
-                placeholder="Search by title, company, skill, or location..."
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg pl-10 pr-4 py-3 text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder:text-slate-500 transition-all"
+                placeholder="Search by title, company, skill..."
+                className="w-full bg-slate-950 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder:text-slate-500 transition-all text-sm"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -249,23 +247,19 @@ const JobParser = ({ onNavigate }: { onNavigate?: (view: any, params?: any) => v
                   onClick={() => setSearchQuery('')}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1"
                 >
-                  <X size={16} />
+                  <X size={14} />
                 </button>
               )}
             </div>
 
             {/* Advanced Filters */}
-            <div className="flex flex-wrap gap-3 items-center">
-                <div className="flex items-center text-xs font-bold text-slate-500 uppercase mr-2">
-                    <Filter size={14} className="mr-1" /> Filters:
-                </div>
-                
+            <div className="flex flex-wrap gap-2 items-center">
                 <select 
                     value={workModeFilter}
                     onChange={(e) => setWorkModeFilter(e.target.value)}
-                    className="bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-lg px-3 py-1.5 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                 >
-                    <option value="All">All Work Modes</option>
+                    <option value="All">All Modes</option>
                     <option value="Remote">Remote</option>
                     <option value="Hybrid">Hybrid</option>
                     <option value="Onsite">Onsite</option>
@@ -274,7 +268,7 @@ const JobParser = ({ onNavigate }: { onNavigate?: (view: any, params?: any) => v
                 <select 
                     value={seniorityFilter}
                     onChange={(e) => setSeniorityFilter(e.target.value)}
-                    className="bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded-lg px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-lg px-3 py-1.5 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                 >
                     <option value="All">All Levels</option>
                     <option value="Entry">Entry</option>
@@ -283,39 +277,34 @@ const JobParser = ({ onNavigate }: { onNavigate?: (view: any, params?: any) => v
                     <option value="Principal">Principal</option>
                 </select>
 
-                <div className="relative max-w-[140px]">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                <div className="relative max-w-[120px]">
+                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs">$</span>
                     <input 
                         type="number"
                         placeholder="Min Salary"
                         value={minSalaryFilter}
                         onChange={(e) => setMinSalaryFilter(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 text-slate-300 text-sm rounded-lg pl-6 pr-3 py-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-slate-600"
+                        className="w-full bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-lg pl-5 pr-2 py-1.5 focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-slate-600 outline-none"
                     />
                 </div>
 
                 {hasActiveFilters && (
                     <button 
                         onClick={clearFilters}
-                        className="text-xs text-indigo-400 hover:text-indigo-300 ml-auto flex items-center"
+                        className="text-[10px] font-bold uppercase tracking-wider text-indigo-400 hover:text-indigo-300 ml-auto flex items-center bg-indigo-500/5 px-2 py-1.5 rounded-lg border border-indigo-500/10"
                     >
-                        <X size={12} className="mr-1" /> Clear All
+                        Reset
                     </button>
                 )}
-            </div>
-
-            <div className="flex items-center justify-between text-xs text-slate-500 border-t border-slate-800/50 pt-3">
-              <span>Found {filteredJobs.length} jobs</span>
-              <span>Sorted by Relevance</span>
             </div>
           </div>
         </div>
 
-        {/* List */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-3xl mx-auto space-y-6">
+        {/* List - Scrollable */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar">
+          <div className="max-w-4xl mx-auto space-y-4 pb-12">
             {filteredJobs.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-slate-600 opacity-60">
+              <div className="flex flex-col items-center justify-center py-32 text-slate-600 opacity-60">
                  <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mb-4">
                     <Search size={24} />
                  </div>
@@ -346,67 +335,67 @@ const JobParser = ({ onNavigate }: { onNavigate?: (view: any, params?: any) => v
 const JobCard: React.FC<{ job: Job; onClick: () => void }> = ({ job, onClick }) => (
   <div 
     onClick={onClick}
-    className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-lg hover:border-indigo-500/50 hover:shadow-indigo-500/10 cursor-pointer transition-all group animate-fadeIn relative overflow-hidden transform hover:-translate-y-1"
+    className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg hover:border-indigo-500/50 hover:bg-slate-900/80 cursor-pointer transition-all group animate-fadeIn relative overflow-hidden transform hover:-translate-y-1 active:scale-[0.99]"
   >
-    <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full -mr-10 -mt-10 blur-2xl group-hover:bg-indigo-500/10 transition-colors"></div>
+    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-indigo-500/10 transition-colors"></div>
     
     <div className="relative z-10">
-      <div className="flex items-start justify-between mb-4">
-        <div>
-           <h3 className="text-xl font-bold text-slate-100 group-hover:text-indigo-300 transition-colors">{job.job_title}</h3>
-           <div className="flex items-center text-indigo-400 mt-1">
-              <Building2 size={16} className="mr-2" />
-              <span className="font-medium">{job.company_name}</span>
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex-1">
+           <h3 className="text-lg sm:text-xl font-bold text-slate-100 group-hover:text-indigo-300 transition-colors leading-tight">{job.job_title}</h3>
+           <div className="flex items-center text-indigo-400 mt-1.5 text-sm">
+              <Building2 size={14} className="mr-2" />
+              <span className="font-semibold">{job.company_name}</span>
            </div>
         </div>
         <div className="flex flex-col items-end shrink-0 ml-4 space-y-2">
-          <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${
+          <span className={`inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
             job.seniority_level === 'Senior' || job.seniority_level === 'Principal' 
-            ? 'bg-purple-900/20 text-purple-300 border-purple-700/50'
-            : 'bg-blue-900/20 text-blue-300 border-blue-700/50'
+            ? 'bg-purple-900/20 text-purple-300 border-purple-700/30'
+            : 'bg-blue-900/20 text-blue-300 border-blue-700/30'
           }`}>
             {job.seniority_level}
           </span>
           {job.posted_date && (
-            <span className="text-[10px] text-slate-500 flex items-center">
+            <span className="text-[10px] text-slate-500 flex items-center font-medium">
                 <Calendar size={10} className="mr-1" /> {job.posted_date}
             </span>
           )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
-        <div className="flex items-center text-slate-400 text-sm">
-          <MapPin size={16} className="mr-2 text-slate-500" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 mb-4">
+        <div className="flex items-center text-slate-400 text-xs">
+          <MapPin size={14} className="mr-2 text-slate-500" />
           <span>{job.location_raw} ({job.work_mode})</span>
         </div>
-        <div className="flex items-center text-slate-400 text-sm">
-          <DollarSign size={16} className="mr-2 text-slate-500" />
-          <span>
+        <div className="flex items-center text-slate-400 text-xs sm:justify-end">
+          <DollarSign size={14} className="mr-1 text-emerald-500/50" />
+          <span className="font-medium text-slate-300">
              {job.salary.min ? `${job.salary.currency || '$'}${job.salary.min.toLocaleString()} - ` : ''}
              {job.salary.max ? `${job.salary.max.toLocaleString()}` : 'Not listed'}
           </span>
         </div>
       </div>
 
-      <div className="pt-4 border-t border-slate-800/50 flex items-center justify-between">
+      <div className="pt-4 border-t border-slate-800/50 flex items-center justify-between gap-4">
         <div className="flex flex-wrap gap-2">
-          {job.required_skills.slice(0, 5).map((skill, i) => (
+          {job.required_skills.slice(0, 4).map((skill, i) => (
             <span 
               key={i}
-              className="px-2.5 py-1 bg-slate-950 border border-slate-800 text-slate-300 rounded text-xs"
+              className="px-2 py-0.5 bg-slate-950 border border-slate-800 text-slate-400 rounded-md text-[10px] font-medium"
             >
               {skill}
             </span>
           ))}
-          {job.required_skills.length > 5 && (
-            <span className="px-2.5 py-1 text-slate-500 text-xs font-medium">+{job.required_skills.length - 5} more</span>
+          {job.required_skills.length > 4 && (
+            <span className="text-slate-500 text-[10px] font-bold">+{job.required_skills.length - 4}</span>
           )}
         </div>
         
         {job.source && (
-            <span className="hidden sm:flex items-center text-xs text-slate-500 bg-slate-950 px-2 py-1 rounded border border-slate-800/50">
-                <Globe size={10} className="mr-1" /> {job.source}
+            <span className="hidden sm:flex items-center text-[10px] font-bold text-slate-500 bg-slate-950 px-2 py-0.5 rounded border border-slate-800/50 uppercase tracking-tighter">
+                {job.source}
             </span>
         )}
       </div>
@@ -416,158 +405,150 @@ const JobCard: React.FC<{ job: Job; onClick: () => void }> = ({ job, onClick }) 
 
 const JobDetailModal: React.FC<{ job: Job; onClose: () => void; onNavigate?: (view: any, params?: any) => void }> = ({ job, onClose, onNavigate }) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-10 bg-black/60 backdrop-blur-md animate-fadeIn">
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-5xl max-h-full overflow-hidden flex flex-col shadow-2xl relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-10 bg-black/80 backdrop-blur-md animate-fadeIn">
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-5xl h-full lg:h-[90vh] flex flex-col shadow-2xl overflow-hidden">
         
-        {/* Modal Header */}
-        <div className="p-6 border-b border-slate-800 bg-slate-900 sticky top-0 z-20 flex justify-between items-start shadow-sm">
-          <div className="flex items-start space-x-4">
-             <div className="w-14 h-14 bg-slate-800 rounded-xl flex items-center justify-center text-indigo-400 shrink-0">
-               <Building2 size={28} />
+        {/* Modal Header - Fixed */}
+        <div className="p-6 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md flex-none flex justify-between items-center z-10">
+          <div className="flex items-center space-x-4">
+             <div className="w-12 h-12 bg-indigo-600/10 border border-indigo-500/20 rounded-2xl flex items-center justify-center text-indigo-400 shrink-0">
+               <Building2 size={24} />
              </div>
              <div>
-                <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-2xl font-bold text-slate-100 leading-tight">{job.job_title}</h2>
-                    {job.source && <span className="text-xs px-2 py-0.5 bg-slate-800 text-slate-400 rounded-full border border-slate-700">{job.source}</span>}
-                </div>
-                <div className="flex items-center text-slate-400 mt-1 space-x-3 text-sm">
-                   <span className="font-medium text-indigo-400">{job.company_name}</span>
-                   <span className="w-1 h-1 rounded-full bg-slate-600"></span>
-                   <span>{job.location_raw}</span>
-                   <span className="w-1 h-1 rounded-full bg-slate-600"></span>
-                   <span>{job.work_mode}</span>
-                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight">{job.job_title}</h2>
+                <p className="text-sm font-semibold text-indigo-400">{job.company_name}</p>
              </div>
           </div>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-colors"
+            className="p-2 hover:bg-slate-800 rounded-full text-slate-500 hover:text-white transition-all active:scale-90"
           >
             <X size={24} />
           </button>
         </div>
 
-        {/* Modal Content */}
-        <div className="overflow-y-auto p-6 lg:p-8 space-y-8 bg-slate-950/30">
-          
-          {/* Quick Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-             <StatBox icon={Briefcase} label="Level" value={job.seniority_level} />
-             <StatBox icon={DollarSign} label="Salary" value={
-                job.salary.max 
-                ? `${job.salary.currency}${job.salary.min?.toLocaleString() || ''} - ${job.salary.max?.toLocaleString()}`
-                : 'Competitive'
-             } />
-             <StatBox icon={ShieldCheck} label="AI Confidence" value={`${Math.round(job.extraction_confidence_score * 100)}%`} 
-                valueColor={job.extraction_confidence_score > 0.8 ? 'text-emerald-400' : 'text-amber-400'} 
-             />
-             <StatBox icon={Target} label="Match Score" value="85% (Mock)" valueColor="text-indigo-400" />
-          </div>
-
-          {/* Reusable Skill Map Component */}
-          <SkillMap 
-            skills={job.required_skills} 
-            onNavigate={(view, params) => {
-              // Close modal before navigating
-              onClose();
-              if (onNavigate) onNavigate(view, params);
-            }} 
-          />
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Content Column */}
-            <div className="lg:col-span-2 space-y-8">
-               
-               {/* Responsibilities */}
-               <section>
-                  <h3 className="text-lg font-bold text-slate-100 mb-4 flex items-center border-b border-slate-800 pb-2">
-                    <List className="mr-2 text-indigo-500" size={20} />
-                    Core Responsibilities
-                  </h3>
-                  <div className="bg-slate-900/50 rounded-xl p-5 border border-slate-800/50">
-                    <ul className="space-y-3">
-                        {job.responsibilities?.map((item, i) => (
-                        <li key={i} className="flex items-start text-slate-300 leading-relaxed text-sm">
-                            <span className="mr-3 mt-1.5 w-1.5 h-1.5 bg-indigo-500 rounded-full shrink-0"></span>
-                            {item}
-                        </li>
-                        )) || <li className="text-slate-500 italic">No responsibilities extracted.</li>}
-                    </ul>
-                  </div>
-               </section>
-
-               {/* Requirements */}
-               <section>
-                  <h3 className="text-lg font-bold text-slate-100 mb-4 flex items-center border-b border-slate-800 pb-2">
-                    <CheckCircle2 className="mr-2 text-emerald-500" size={20} />
-                    Requirements
-                  </h3>
-                  <div className="bg-slate-900/50 rounded-xl p-5 border border-slate-800/50">
-                    <ul className="space-y-3">
-                        {job.requirements?.map((item, i) => (
-                        <li key={i} className="flex items-start text-slate-300 leading-relaxed text-sm">
-                            <span className="mr-3 mt-1.5 w-1.5 h-1.5 bg-emerald-500 rounded-full shrink-0"></span>
-                            {item}
-                        </li>
-                        )) || <li className="text-slate-500 italic">No requirements extracted.</li>}
-                    </ul>
-                  </div>
-               </section>
+        {/* Modal Content - Independently Scrollable */}
+        <div className="flex-1 overflow-y-auto p-6 sm:p-8 lg:p-10 custom-scrollbar bg-slate-950/20">
+          <div className="space-y-10 max-w-4xl mx-auto">
+            
+            {/* Quick Stats Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+               <StatBox icon={Briefcase} label="Level" value={job.seniority_level} />
+               <StatBox icon={DollarSign} label="Salary" value={
+                  job.salary.max 
+                  ? `${job.salary.currency}${job.salary.min?.toLocaleString() || ''} - ${job.salary.max?.toLocaleString()}`
+                  : 'Competitive'
+               } />
+               <StatBox icon={ShieldCheck} label="AI Confidence" value={`${Math.round(job.extraction_confidence_score * 100)}%`} 
+                  valueColor={job.extraction_confidence_score > 0.8 ? 'text-emerald-400' : 'text-amber-400'} 
+               />
+               <StatBox icon={Target} label="Location" value={job.location_raw} />
             </div>
 
-            {/* Sidebar Column */}
-            <div className="space-y-6">
-              
-              {/* Tech Stack */}
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
-                 <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center">
-                    <Zap size={14} className="mr-1" /> Tech Stack
-                 </h4>
-                 <div className="flex flex-wrap gap-2">
-                    {job.required_skills.map(skill => (
-                      <span key={skill} className="px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 rounded-md text-sm font-medium hover:bg-indigo-500/20 transition-colors cursor-default">
-                        {skill}
-                      </span>
-                    ))}
-                 </div>
+            {/* Reusable Skill Map Component */}
+            <SkillMap 
+              skills={job.required_skills} 
+              onNavigate={(view, params) => {
+                onClose();
+                if (onNavigate) onNavigate(view, params);
+              }} 
+            />
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+              {/* Main Content Column */}
+              <div className="lg:col-span-2 space-y-10">
+                 
+                 {/* Responsibilities */}
+                 <section>
+                    <h3 className="text-lg font-bold text-white mb-4 flex items-center">
+                      <List className="mr-3 text-indigo-500" size={20} />
+                      Core Responsibilities
+                    </h3>
+                    <div className="bg-slate-900/40 rounded-2xl p-6 border border-slate-800/50">
+                      <ul className="space-y-4">
+                          {job.responsibilities?.map((item, i) => (
+                          <li key={i} className="flex items-start text-slate-300 leading-relaxed text-sm">
+                              <span className="mr-4 mt-2 w-1.5 h-1.5 bg-indigo-500 rounded-full shrink-0"></span>
+                              {item}
+                          </li>
+                          )) || <li className="text-slate-500 italic">No responsibilities extracted.</li>}
+                      </ul>
+                    </div>
+                 </section>
+
+                 {/* Requirements */}
+                 <section>
+                    <h3 className="text-lg font-bold text-white mb-4 flex items-center">
+                      <CheckCircle2 className="mr-3 text-emerald-500" size={20} />
+                      Requirements
+                    </h3>
+                    <div className="bg-slate-900/40 rounded-2xl p-6 border border-slate-800/50">
+                      <ul className="space-y-4">
+                          {job.requirements?.map((item, i) => (
+                          <li key={i} className="flex items-start text-slate-300 leading-relaxed text-sm">
+                              <span className="mr-4 mt-2 w-1.5 h-1.5 bg-emerald-500 rounded-full shrink-0"></span>
+                              {item}
+                          </li>
+                          )) || <li className="text-slate-500 italic">No requirements extracted.</li>}
+                      </ul>
+                    </div>
+                 </section>
               </div>
 
-              {/* Benefits */}
-              {job.benefits && job.benefits.length > 0 && (
-                <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
-                   <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Perks & Benefits</h4>
-                   <ul className="space-y-2.5">
-                      {job.benefits.map((benefit, i) => (
-                        <li key={i} className="flex items-center text-sm text-slate-300">
-                           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 mr-2.5"></div>
-                           {benefit}
-                        </li>
+              {/* Sidebar Column */}
+              <div className="space-y-8">
+                
+                {/* Tech Stack */}
+                <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 shadow-sm">
+                   <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-5 flex items-center">
+                      <Zap size={14} className="mr-2" /> Key Tech Stack
+                   </h4>
+                   <div className="flex flex-wrap gap-2">
+                      {job.required_skills.map(skill => (
+                        <span key={skill} className="px-3 py-1.5 bg-indigo-600/10 border border-indigo-500/20 text-indigo-300 rounded-lg text-sm font-semibold">
+                          {skill}
+                        </span>
                       ))}
-                   </ul>
+                   </div>
                 </div>
-              )}
 
-              {/* Missing Skills Alert (Mock) */}
-              <div className="bg-amber-900/10 border border-amber-900/30 rounded-xl p-5">
-                 <h4 className="text-xs font-bold text-amber-500 uppercase tracking-wider mb-3 flex items-center">
-                    <AlertCircle size={14} className="mr-1" /> Potential Gaps
-                 </h4>
-                 <p className="text-xs text-slate-400 leading-relaxed">
-                    This role requires <strong>Rust</strong> and <strong>Oracle Cloud</strong> which are not in your profile. Consider refreshing these topics.
-                 </p>
+                {/* Benefits */}
+                {job.benefits && job.benefits.length > 0 && (
+                  <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 shadow-sm">
+                     <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-5">Perks & Benefits</h4>
+                     <ul className="space-y-3">
+                        {job.benefits.map((benefit, i) => (
+                          <li key={i} className="flex items-center text-sm text-slate-300">
+                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50 mr-3"></div>
+                             {benefit}
+                          </li>
+                        ))}
+                     </ul>
+                  </div>
+                )}
+
+                {/* Missing Skills Alert */}
+                <div className="bg-amber-900/10 border border-amber-900/20 rounded-2xl p-6">
+                   <h4 className="text-xs font-bold text-amber-500 uppercase tracking-wider mb-3 flex items-center">
+                      <AlertCircle size={14} className="mr-2" /> Potential Gaps
+                   </h4>
+                   <p className="text-xs text-slate-400 leading-relaxed">
+                      This role requires <strong>Rust</strong> which is not in your profile.
+                   </p>
+                </div>
+
               </div>
-
             </div>
           </div>
         </div>
 
-        {/* Modal Footer */}
-        <div className="p-6 border-t border-slate-800 bg-slate-900 z-20 flex flex-col sm:flex-row justify-between items-center gap-4">
-           <div className="text-xs text-slate-500 hidden sm:block">
+        {/* Modal Footer - Fixed */}
+        <div className="p-6 sm:p-8 border-t border-slate-800 bg-slate-900/90 backdrop-blur-md flex-none flex flex-col sm:flex-row justify-between items-center gap-4">
+           <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500 hidden sm:block">
               Parsed by OpsPrep AI &bull; {new Date().toLocaleDateString()}
            </div>
            <div className="flex space-x-3 w-full sm:w-auto">
-                <button onClick={onClose} className="flex-1 sm:flex-none px-6 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 font-medium transition-colors border border-transparent hover:border-slate-700">
+                <button onClick={onClose} className="flex-1 sm:flex-none px-8 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 font-bold transition-all border border-transparent hover:border-slate-700">
                     Close
                 </button>
                 {job.application_link ? (
@@ -575,9 +556,9 @@ const JobDetailModal: React.FC<{ job: Job; onClose: () => void; onNavigate?: (vi
                         href={job.application_link} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="flex-1 sm:flex-none px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium shadow-lg shadow-indigo-500/20 transition-all flex items-center justify-center"
+                        className="flex-1 sm:flex-none px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-xl shadow-indigo-600/20 transition-all flex items-center justify-center active:scale-95"
                     >
-                        Apply Now <ExternalLink size={18} className="ml-2" />
+                        Apply <ExternalLink size={18} className="ml-2" />
                     </a>
                 ) : (
                     <button 
@@ -587,9 +568,9 @@ const JobDetailModal: React.FC<{ job: Job; onClose: () => void; onNavigate?: (vi
                             onNavigate('questions', { topic: job.required_skills[0] });
                         }
                     }}
-                    className="flex-1 sm:flex-none px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium shadow-lg shadow-indigo-500/20 transition-all flex items-center justify-center"
+                    className="flex-1 sm:flex-none px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-xl shadow-indigo-600/20 transition-all flex items-center justify-center active:scale-95"
                     >
-                        Generate Study Plan <ArrowRight size={18} className="ml-2" />
+                        Study Plan <ArrowRight size={18} className="ml-2" />
                     </button>
                 )}
            </div>
@@ -601,13 +582,13 @@ const JobDetailModal: React.FC<{ job: Job; onClose: () => void; onNavigate?: (vi
 };
 
 const StatBox = ({ icon: Icon, label, value, valueColor = 'text-slate-200' }: any) => (
-    <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center space-x-4 shadow-sm">
-        <div className="p-2.5 bg-slate-800 rounded-lg text-slate-400">
+    <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl flex items-center space-x-4">
+        <div className="p-3 bg-slate-800 rounded-xl text-indigo-400">
             <Icon size={20} />
         </div>
-        <div>
-            <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">{label}</div>
-            <div className={`font-bold ${valueColor} truncate max-w-[150px]`}>{value}</div>
+        <div className="overflow-hidden">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">{label}</div>
+            <div className={`font-bold ${valueColor} truncate leading-tight`}>{value}</div>
         </div>
     </div>
 );
