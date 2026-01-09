@@ -1,5 +1,7 @@
 {
-  "firebase_hosting": {},
+  "firebase_hosting": {
+    "deploymentHostingUrl": "https://opsprep-ai.web.app"
+  },
   "cloud_run_deploy": {},
   "gemini_api": {},
   "secrets_manager": {}
