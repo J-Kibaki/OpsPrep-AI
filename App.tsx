@@ -25,7 +25,7 @@ import CheatSheets from './pages/CheatSheets';
 import MockInterview from './pages/MockInterview';
 import Profile from './pages/Profile';
 import { useUser } from './context/UserContext';
-import { Login } from './pages/Login';
+import Login from './pages/Login';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('dashboard');

@@ -1,0 +1,54 @@
+mutation CreateDemoData @transaction @auth(level: PUBLIC, insecureReason: "This operation is for demo purposes and is safe to expose to the public.") {
+  user_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      createdAt: "2024-04-01T00:00:00Z",
+      displayName: "demouser1",
+      email: "demouser1@example.com",
+      hashedPassword: "password123",
+      isActive: true,
+      updatedAt: "2024-04-01T00:00:00Z"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440001",
+      createdAt: "2024-04-01T00:00:00Z",
+      displayName: "demouser2",
+      email: "demouser2@example.com",
+      hashedPassword: "password123",
+      isActive: true,
+      updatedAt: "2024-04-01T00:00:00Z"
+    }
+  ])
+  session_insertMany(data: [
+    {
+      id: "650e8400-e29b-41d4-a716-446655440000",
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      createdAt: "2024-04-01T00:00:00Z",
+      expiresAt: "2024-04-02T00:00:00Z",
+      token: "token123"
+    },
+    {
+      id: "650e8400-e29b-41d4-a716-446655440001",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      createdAt: "2024-04-01T00:00:00Z",
+      expiresAt: "2024-04-02T00:00:00Z",
+      token: "token456"
+    }
+  ])
+  passwordResetToken_insertMany(data: [
+    {
+      id: "750e8400-e29b-41d4-a716-446655440000",
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      createdAt: "2024-04-01T00:00:00Z",
+      expiresAt: "2024-04-02T00:00:00Z",
+      token: "resettoken1",
+    },
+    {
+      id: "750e8400-e29b-41d4-a716-446655440001",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      createdAt: "2024-04-01T00:00:00Z",
+      expiresAt: "2024-04-02T00:00:00Z",
+      token: "resettoken2",
+    }
+  ])
+}

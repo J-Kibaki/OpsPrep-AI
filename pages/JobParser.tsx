@@ -130,7 +130,7 @@ const MOCK_JOBS: Job[] = [
   }
 ];
 
-export const JobParser = ({ onNavigate }: { onNavigate?: (view: any, params?: any) => void }) => {
+const JobParser = ({ onNavigate }: { onNavigate?: (view: any, params?: any) => void }) => {
   const [rawText, setRawText] = useState('');
   const [jobs, setJobs] = useState<Job[]>(MOCK_JOBS);
   const [loading, setLoading] = useState(false);
@@ -611,3 +611,5 @@ const StatBox = ({ icon: Icon, label, value, valueColor = 'text-slate-200' }: an
         </div>
     </div>
 );
+
+export default JobParser;

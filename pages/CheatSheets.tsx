@@ -4,7 +4,7 @@ import { CheatSheet } from '../types';
 import { SKILL_TAXONOMY } from '../constants';
 import { Loader2, Terminal, Copy, Check, FileCode, Layers, Search } from 'lucide-react';
 
-export const CheatSheets = () => {
+const CheatSheets = () => {
     const [topic, setTopic] = useState('Linux Networking');
     const [cheatSheet, setCheatSheet] = useState<CheatSheet | null>(null);
     const [loading, setLoading] = useState(false);
@@ -144,3 +144,5 @@ export const CheatSheets = () => {
         </div>
     );
 };
+
+export default CheatSheets;

@@ -1,0 +1,26 @@
+mutation CreateUser($email: String!, $hashedPassword: String!, $displayName: String) @auth(level: USER) {
+  user_insert(data: {
+    email: $email,
+    hashedPassword: $hashedPassword,
+    displayName: $displayName,
+    createdAt_expr: "request.time",
+    updatedAt_expr: "request.time",
+    isActive: true
+  })
+}
+
+query GetUserByEmail($email: String!) @auth(level: USER) {
+  users(where: {email: {eq: $email}}) {
+    id
+    email
+    displayName
+  }
+}
+
+mutation UpdateUserDisplayName($id: UUID!, $displayName: String!) @auth(level: USER) {
+  user_update(key: {id: $id}, data: {displayName: $displayName, updatedAt_expr: "request.time"})
+}
+
+mutation DeleteInactiveUsers @auth(level: NO_ACCESS) {
+  user_deleteMany(where: {isActive: {eq: false}})
+}

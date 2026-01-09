@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { auth } from '../services/firebase';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, signInWithRedirect, GoogleAuthProvider } from 'firebase/auth';
 import { Cpu, Mail, Lock, Chrome, Loader2 } from 'lucide-react';
 
-export const Login: React.FC = () => {
+const Login: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,9 +32,19 @@ export const Login: React.FC = () => {
     setError('');
     const provider = new GoogleAuthProvider();
     try {
+      // Use signInWithPopup first, but catch the popup-blocked error
       await signInWithPopup(auth, provider);
     } catch (err: any) {
-      setError(err.message || 'Google Sign-In failed');
+      if (err.code === 'auth/popup-blocked') {
+        // Fallback to redirect if popup is blocked
+        try {
+          await signInWithRedirect(auth, provider);
+        } catch (redirectErr: any) {
+          setError(redirectErr.message || 'Google Sign-In failed');
+        }
+      } else {
+        setError(err.message || 'Google Sign-In failed');
+      }
     }
   };
 
@@ -128,3 +138,5 @@ export const Login: React.FC = () => {
     </div>
   );
 };
+
+export default Login;

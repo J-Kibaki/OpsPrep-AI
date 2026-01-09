@@ -7,7 +7,7 @@ import {
     Briefcase, Shield, History
 } from 'lucide-react';
 
-export const Profile = () => {
+const Profile = () => {
   const { profile, updateProfile, activities, readiness } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [resumeText, setResumeText] = useState('');
@@ -263,3 +263,5 @@ const InputField = ({ label, value, onChange, disabled, type = "text" }: any) =>
         />
     </div>
 );
+
+export default Profile;

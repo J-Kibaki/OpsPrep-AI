@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SKILL_TAXONOMY } from '../constants';
 import { Hash, ArrowRight, Layers, Database, Cloud, Shield, Terminal, Activity, GitBranch, Globe, Server, Cpu } from 'lucide-react';
 
-export const TaxonomyExplorer = ({ onNavigate }: { onNavigate: (view: any, params?: any) => void }) => {
+const TaxonomyExplorer = ({ onNavigate }: { onNavigate: (view: any, params?: any) => void }) => {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
   const getIconForCategory = (category: string) => {
@@ -96,3 +96,5 @@ export const TaxonomyExplorer = ({ onNavigate }: { onNavigate: (view: any, param
     </div>
   );
 };
+
+export default TaxonomyExplorer;

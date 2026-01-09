@@ -14,7 +14,7 @@ interface QuestionCardProps {
   onToggle: () => void;
 }
 
-export const QuestionBank = ({ initialTopic }: { initialTopic?: string }) => {
+const QuestionBank = ({ initialTopic }: { initialTopic?: string }) => {
   const [role, setRole] = useState('SRE');
   const [level, setLevel] = useState('Senior');
   const [cloud, setCloud] = useState('AWS');
@@ -352,3 +352,5 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, expanded, onToggl
     </div>
   );
 };
+
+export default QuestionBank;

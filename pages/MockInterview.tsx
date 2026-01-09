@@ -10,7 +10,7 @@ interface Message {
   text: string;
 }
 
-export const MockInterview = () => {
+const MockInterview = () => {
   const [messages, setMessages] = useState<Message[]>([
     { role: 'model', text: "Hello. I'm your AI technical interviewer today. I'll be conducting a mock interview for a Senior SRE role. When you're ready, let me know, and we'll start with a quick introduction." }
   ]);
@@ -289,3 +289,5 @@ const ScoreBadge = ({ score }: { score: number }) => {
         </span>
     );
 };
+
+export default MockInterview;
