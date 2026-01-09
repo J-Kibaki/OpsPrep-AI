@@ -29,6 +29,7 @@ import Login from './pages/Login';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [navParams, setNavParams] = useState<any>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, profile, loading, logout } = useUser();
 
@@ -43,6 +44,12 @@ const App = () => {
   if (!user) {
     return <Login />;
   }
+
+  const handleNavigate = (view: string, params?: any) => {
+    setActiveTab(view);
+    setNavParams(params);
+    setSidebarOpen(false);
+  };
 
   const navItems = [
     { id: 'dashboard', icon: Terminal, label: 'Dashboard' },
@@ -92,8 +99,7 @@ const App = () => {
             <button
               key={item.id}
               onClick={() => {
-                setActiveTab(item.id);
-                setSidebarOpen(false);
+                handleNavigate(item.id, null);
               }}
               className={`
                 w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200
@@ -131,12 +137,12 @@ const App = () => {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto relative custom-scrollbar bg-slate-950">
         <div className="max-w-7xl mx-auto">
-          {activeTab === 'dashboard' && <Home onNavigate={setActiveTab} />}
-          {activeTab === 'questions' && <QuestionBank />}
+          {activeTab === 'dashboard' && <Home onNavigate={handleNavigate} />}
+          {activeTab === 'questions' && <QuestionBank initialTopic={navParams?.topic} />}
           {activeTab === 'interview' && <MockInterview />}
-          {activeTab === 'jobs' && <JobParser />}
+          {activeTab === 'jobs' && <JobParser onNavigate={handleNavigate} />}
           {activeTab === 'cheatsheets' && <CheatSheets />}
-          {activeTab === 'taxonomy' && <TaxonomyExplorer />}
+          {activeTab === 'taxonomy' && <TaxonomyExplorer onNavigate={handleNavigate} />}
           {activeTab === 'profile' && <Profile />}
         </div>
       </main>
